@@ -1,4 +1,4 @@
-using JuliaDB
+using JuliaDB, Stats
 import JuliaDB: DNextTable
 
 """

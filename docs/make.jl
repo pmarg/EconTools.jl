@@ -1,4 +1,4 @@
-using Documenter, PACKAGE_NAME
+using Documenter, EconTools
 
 makedocs()
 deploydocs(
