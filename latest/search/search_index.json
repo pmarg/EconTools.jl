@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/", 
-            "text": "EconTools Documentation\n\n\nA collection of functions for economics.\n\n\n\n\nFunctions\n\n\n\n\nDataSetTools", 
+            "text": "EconTools Documentation\n\n\nA collection of functions for economics.\n\n\n\n\nFunctions\n\n\n\n\nDataSetTools\n\n\nIndex", 
             "title": "Home"
         }, 
         {
@@ -12,7 +12,7 @@
         }, 
         {
             "location": "/#functions", 
-            "text": "DataSetTools", 
+            "text": "DataSetTools  Index", 
             "title": "Functions"
         }
     ]
