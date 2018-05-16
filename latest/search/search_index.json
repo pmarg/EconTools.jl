@@ -14,6 +14,26 @@
             "location": "/#functions", 
             "text": "DataSetTools  Index", 
             "title": "Functions"
+        }, 
+        {
+            "location": "/lib/DataSetTools/", 
+            "text": "DataSetTools\n\n\n#\n\n\nEconTools.descriptive_stats\n \n \nFunction\n.\n\n\ndescriptive_stats(table::DNextTable,var::String,by::Tuple;weight=\nNone\n)\n\n\n\n\nReturns a new table containing  the mean, standard deviation, 1st, 2nd and 3rd quantiles of variable \nvar\n by a selection of tuple of columns \nby\n. Weights are optional and if specified, the function returns the weighted descriptive statistics.\n\n\nsource\n\n\n#\n\n\nEconTools.save_csv\n \n \nFunction\n.\n\n\nsave_csv(path::String,table::DNextTable)\nSaves table as CSV at the specified path\n\n\n\n\nsource", 
+            "title": "DataSetTools"
+        }, 
+        {
+            "location": "/lib/DataSetTools/#datasettools", 
+            "text": "#  EconTools.descriptive_stats     Function .  descriptive_stats(table::DNextTable,var::String,by::Tuple;weight= None )  Returns a new table containing  the mean, standard deviation, 1st, 2nd and 3rd quantiles of variable  var  by a selection of tuple of columns  by . Weights are optional and if specified, the function returns the weighted descriptive statistics.  source  #  EconTools.save_csv     Function .  save_csv(path::String,table::DNextTable)\nSaves table as CSV at the specified path  source", 
+            "title": "DataSetTools"
+        }, 
+        {
+            "location": "/lib/", 
+            "text": "Index\n\n\n\n\nEconTools.descriptive_stats\n\n\nEconTools.save_csv", 
+            "title": "Index"
+        }, 
+        {
+            "location": "/lib/#index", 
+            "text": "EconTools.descriptive_stats  EconTools.save_csv", 
+            "title": "Index"
         }
     ]
 }
