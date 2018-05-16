@@ -22,3 +22,6 @@ docs_dir: 'build'
 
 pages:
   - Home: index.md
+  - Functions:
+      - DataSetTools: lib/DataSetTools.md
+  - Index: lib/index.md
