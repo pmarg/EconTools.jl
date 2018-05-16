@@ -1,0 +1,19 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "EconTools Documentation\n\n\nA collection of functions for economics.\n\n\n\n\nFunctions\n\n\n\n\nDataSetTools", 
+            "title": "Home"
+        }, 
+        {
+            "location": "/#econtools-documentation", 
+            "text": "A collection of functions for economics.", 
+            "title": "EconTools Documentation"
+        }, 
+        {
+            "location": "/#functions", 
+            "text": "DataSetTools", 
+            "title": "Functions"
+        }
+    ]
+}
