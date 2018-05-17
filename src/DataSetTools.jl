@@ -2,7 +2,7 @@ using JuliaDB, Stats
 import JuliaDB: DNextTable
 
 """
-    descriptive_stats(table::DNextTable,var::String,by::Tuple;weight="None")
+    descriptive_stats(table::DNextTable,var::String,bycolumn::Tuple;weight="None")
 Returns a new table containing  the mean, standard deviation, 1st, 2nd and 3rd quantiles of
 variable `var` by a selection of tuple of columns `bycolumns`. Weights are optional and if specified,
 the function returns the weighted descriptive statistics.
@@ -37,8 +37,8 @@ end
 """
     save_csv(path::String,table::DNextTable)
 Saves table as CSV at the specified path.
-For example save_csv("Data\\data.csv",data) saves the table `data` in the
-subfolder `Data` under the name `data.csv`
+For example `save_csv("Folder\\data.csv",t)` saves the table `t` in the
+subfolder `Folder` under the name `data.csv`
 """
 function save_csv(path::String,table::DNextTable)
     open(path,"w") do fid
