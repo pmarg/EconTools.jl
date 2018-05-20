@@ -67,6 +67,10 @@
 
     </ul>
                 </li>
+                <li class="">
+                    
+    <a class="" href="../PlottingTools/">PlottingTools</a>
+                </li>
     </ul>
 	    </li>
           
@@ -118,19 +122,19 @@
 <h1 id="datasettools">DataSetTools</h1>
 <p><a id='EconTools.descriptive_stats' href='#EconTools.descriptive_stats'>#</a>
 <strong><code>EconTools.descriptive_stats</code></strong> &mdash; <em>Function</em>.</p>
-<pre><code>descriptive_stats(table::DNextTable,var::String,bycolumn::Tuple;weight=&quot;None&quot;)
+<pre><code>descriptive_stats(table,var::String,bycolumn::Tuple;weight=&quot;None&quot;)
 </code></pre>
 
 <p>Returns a new table containing  the mean, standard deviation, 1st, 2nd and 3rd quantiles of variable <code>var</code> by a selection of tuple of columns <code>bycolumns</code>. Weights are optional and if specified, the function returns the weighted descriptive statistics.</p>
 <p>For example <code>descriptive_stats(data,"income",(:age,:gender),weight="sampling_weights")</code> returns the descriptive statistics of income from table <code>data</code> by the columns name <code>age</code> and <code>gender</code>, weighted by the sampling weights <code>sampling_weights</code></p>
-<p><a target='_blank' href='https://github.com/pmarg/EconTools.jl/blob/eb34054a6b2cfdabfb575ac67e6bfbebd8f1cb92/src/DataSetTools.jl#L4-L13' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/pmarg/EconTools.jl/blob/9c1e7e1bbe2be9b291a8e9d0848b389781caa49c/src/DataSetTools.jl#L3-L12' class='documenter-source'>source</a><br></p>
 <p><a id='EconTools.save_csv' href='#EconTools.save_csv'>#</a>
 <strong><code>EconTools.save_csv</code></strong> &mdash; <em>Function</em>.</p>
 <pre><code>save_csv(path::String,table::DNextTable)
 </code></pre>
 
 <p>Saves table as CSV at the specified path. For example <code>save_csv("Folder\data.csv",t)</code> saves the table <code>t</code> in the subfolder <code>Folder</code> under the name <code>data.csv</code></p>
-<p><a target='_blank' href='https://github.com/pmarg/EconTools.jl/blob/eb34054a6b2cfdabfb575ac67e6bfbebd8f1cb92/src/DataSetTools.jl#L37-L42' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/pmarg/EconTools.jl/blob/9c1e7e1bbe2be9b291a8e9d0848b389781caa49c/src/DataSetTools.jl#L59-L64' class='documenter-source'>source</a><br></p>
               
             </div>
           </div>
@@ -138,7 +142,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../" class="btn btn-neutral float-right" title="Index">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../PlottingTools/" class="btn btn-neutral float-right" title="PlottingTools">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../.." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -172,7 +176,7 @@
         <span><a href="../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../PlottingTools/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

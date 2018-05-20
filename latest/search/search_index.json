@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/", 
-            "text": "EconTools Documentation\n\n\nA collection of functions for economics.\n\n\n\n\nFunctions\n\n\n\n\nDataSetTools\n\n\nIndex", 
+            "text": "EconTools Documentation\n\n\nA collection of functions for economics.\n\n\n\n\nFunctions\n\n\n\n\nPlottingTools\n\n\nDataSetTools\n\n\nIndex\n\n\nEconTools Documentation\n\n\nFunctions", 
             "title": "Home"
         }, 
         {
@@ -12,27 +12,37 @@
         }, 
         {
             "location": "/#functions", 
-            "text": "DataSetTools  Index", 
+            "text": "PlottingTools  DataSetTools  Index  EconTools Documentation  Functions", 
             "title": "Functions"
         }, 
         {
             "location": "/lib/DataSetTools/", 
-            "text": "DataSetTools\n\n\n#\n\n\nEconTools.descriptive_stats\n \n \nFunction\n.\n\n\ndescriptive_stats(table::DNextTable,var::String,bycolumn::Tuple;weight=\nNone\n)\n\n\n\n\nReturns a new table containing  the mean, standard deviation, 1st, 2nd and 3rd quantiles of variable \nvar\n by a selection of tuple of columns \nbycolumns\n. Weights are optional and if specified, the function returns the weighted descriptive statistics.\n\n\nFor example \ndescriptive_stats(data,\"income\",(:age,:gender),weight=\"sampling_weights\")\n returns the descriptive statistics of income from table \ndata\n by the columns name \nage\n and \ngender\n, weighted by the sampling weights \nsampling_weights\n\n\nsource\n\n\n#\n\n\nEconTools.save_csv\n \n \nFunction\n.\n\n\nsave_csv(path::String,table::DNextTable)\n\n\n\n\nSaves table as CSV at the specified path. For example \nsave_csv(\"Folder\\data.csv\",t)\n saves the table \nt\n in the subfolder \nFolder\n under the name \ndata.csv\n\n\nsource", 
+            "text": "DataSetTools\n\n\n#\n\n\nEconTools.descriptive_stats\n \n \nFunction\n.\n\n\ndescriptive_stats(table,var::String,bycolumn::Tuple;weight=\nNone\n)\n\n\n\n\nReturns a new table containing  the mean, standard deviation, 1st, 2nd and 3rd quantiles of variable \nvar\n by a selection of tuple of columns \nbycolumns\n. Weights are optional and if specified, the function returns the weighted descriptive statistics.\n\n\nFor example \ndescriptive_stats(data,\"income\",(:age,:gender),weight=\"sampling_weights\")\n returns the descriptive statistics of income from table \ndata\n by the columns name \nage\n and \ngender\n, weighted by the sampling weights \nsampling_weights\n\n\nsource\n\n\n#\n\n\nEconTools.save_csv\n \n \nFunction\n.\n\n\nsave_csv(path::String,table::DNextTable)\n\n\n\n\nSaves table as CSV at the specified path. For example \nsave_csv(\"Folder\\data.csv\",t)\n saves the table \nt\n in the subfolder \nFolder\n under the name \ndata.csv\n\n\nsource", 
             "title": "DataSetTools"
         }, 
         {
             "location": "/lib/DataSetTools/#datasettools", 
-            "text": "#  EconTools.descriptive_stats     Function .  descriptive_stats(table::DNextTable,var::String,bycolumn::Tuple;weight= None )  Returns a new table containing  the mean, standard deviation, 1st, 2nd and 3rd quantiles of variable  var  by a selection of tuple of columns  bycolumns . Weights are optional and if specified, the function returns the weighted descriptive statistics.  For example  descriptive_stats(data,\"income\",(:age,:gender),weight=\"sampling_weights\")  returns the descriptive statistics of income from table  data  by the columns name  age  and  gender , weighted by the sampling weights  sampling_weights  source  #  EconTools.save_csv     Function .  save_csv(path::String,table::DNextTable)  Saves table as CSV at the specified path. For example  save_csv(\"Folder\\data.csv\",t)  saves the table  t  in the subfolder  Folder  under the name  data.csv  source", 
+            "text": "#  EconTools.descriptive_stats     Function .  descriptive_stats(table,var::String,bycolumn::Tuple;weight= None )  Returns a new table containing  the mean, standard deviation, 1st, 2nd and 3rd quantiles of variable  var  by a selection of tuple of columns  bycolumns . Weights are optional and if specified, the function returns the weighted descriptive statistics.  For example  descriptive_stats(data,\"income\",(:age,:gender),weight=\"sampling_weights\")  returns the descriptive statistics of income from table  data  by the columns name  age  and  gender , weighted by the sampling weights  sampling_weights  source  #  EconTools.save_csv     Function .  save_csv(path::String,table::DNextTable)  Saves table as CSV at the specified path. For example  save_csv(\"Folder\\data.csv\",t)  saves the table  t  in the subfolder  Folder  under the name  data.csv  source", 
             "title": "DataSetTools"
         }, 
         {
+            "location": "/lib/PlottingTools/", 
+            "text": "PlottingTools\n\n\n#\n\n\nEconTools.scatterplot\n \n \nFunction\n.\n\n\nscatterplot(x,y)\n\n\n\n\nReturns a scatter plot with a fitted line. The estimation uses GLM.jl\n\n\nsource", 
+            "title": "PlottingTools"
+        }, 
+        {
+            "location": "/lib/PlottingTools/#plottingtools", 
+            "text": "#  EconTools.scatterplot     Function .  scatterplot(x,y)  Returns a scatter plot with a fitted line. The estimation uses GLM.jl  source", 
+            "title": "PlottingTools"
+        }, 
+        {
             "location": "/lib/", 
-            "text": "Index\n\n\n\n\nEconTools.descriptive_stats\n\n\nEconTools.save_csv", 
+            "text": "Index\n\n\n\n\nEconTools.descriptive_stats\n\n\nEconTools.save_csv\n\n\nEconTools.scatterplot", 
             "title": "Index"
         }, 
         {
             "location": "/lib/#index", 
-            "text": "EconTools.descriptive_stats  EconTools.save_csv", 
+            "text": "EconTools.descriptive_stats  EconTools.save_csv  EconTools.scatterplot", 
             "title": "Index"
         }
     ]
