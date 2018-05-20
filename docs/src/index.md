@@ -7,7 +7,6 @@ A collection of functions for economics.
 ```@contents
 Pages = [
     "lib/DataSetTools.md",
-    "lib/PlottingTools.md"
-    "lib/index.md"]
+    "lib/PlottingTools.md"]
 Depth = 2
 ```
