@@ -25,5 +25,6 @@ function scatterplot(x,y)
         p1 = plot!(X,fitted(α,β,X),label="y=$α +$β*x \n (Pval=$Pval)")
     else
         p1 = plot!(X,fitted(α,β,X),label="y=$α $β*x \n (Pval=$Pval)")
+    end
     return p1
 end
