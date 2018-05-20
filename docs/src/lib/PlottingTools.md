@@ -1,0 +1,5 @@
+# PlottingTools
+
+```@docs
+scatterplot
+```

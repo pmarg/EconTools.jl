@@ -24,4 +24,5 @@ pages:
   - Home: index.md
   - Functions:
       - DataSetTools: lib/DataSetTools.md
+      - PlottingTools: lib/PlottingTools.md
   - Index: lib/index.md
