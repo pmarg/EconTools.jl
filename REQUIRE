@@ -1,3 +1,7 @@
 julia 0.6
 JuliaDB
 Stats
+Plots
+GLM
+DataFrames
+Distributions
