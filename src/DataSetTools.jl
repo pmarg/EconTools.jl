@@ -1,5 +1,4 @@
 using JuliaDB, Stats
-import JuliaDB: DNextTable
 
 """
     descriptive_stats(table,var::String,bycolumn::Tuple;weight="None")
