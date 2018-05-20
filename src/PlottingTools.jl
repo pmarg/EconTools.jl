@@ -11,7 +11,7 @@ Returns a scatter plot with a fitted line. The estimation uses GLM.jl
 """
 function scatterplot(x,y)
 
-    data=DataFrame(X=x,Y=x)
+    data=DataFrame(X=x,Y=y)
     ols = lm(@formula(Y ~ X), data)
     α = round(coef(ols)[1],2)
     β = round(coef(ols)[2],2)
@@ -21,6 +21,9 @@ function scatterplot(x,y)
     fitted(α,β,x) = α + β*x
     X = linspace(minimum(x),maximum(x),2)
     p1 = scatter(x,y,label="")
-    p1 = plot!(X,fitted(α,β,X),label="$α +$β*X \n (Pval=$Pval)")
+    if β>0
+        p1 = plot!(X,fitted(α,β,X),label="y=$α +$β*x \n (Pval=$Pval)")
+    else
+        p1 = plot!(X,fitted(α,β,X),label="y=$α $β*x \n (Pval=$Pval)")
     return p1
 end
