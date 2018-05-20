@@ -2,4 +2,5 @@
 
 ```@docs
 scatterplot
+pgfplots_scatter
 ```

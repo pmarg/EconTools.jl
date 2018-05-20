@@ -1,4 +1,4 @@
-using Plots
+using Plots, PGFPlotsX
 import StatsBase: dof_residual
 import GLM: lm, @formula, coef, stderror
 import Distributions: FDist, ccdf
@@ -27,4 +27,50 @@ function scatterplot(x,y)
         p1 = plot!(X,fitted(α,β,X),label="y=$α $β*x \n (Pval=$Pval)")
     end
     return p1
+end
+
+
+"""
+    pgfplots_scatter(x,y;Title="Title",x_label="X",y_label="Y")
+Returns a PGFPlots scatter plot with a fitted line. The estimation uses GLM.jl
+"""
+function pgfplots_scatter(x,y;Title="Title",x_label="X",y_label="Y")
+    data=DataFrame(X=x,Y=y)
+    ols = lm(@formula(Y ~ X), data)
+    α = round(coef(ols)[1],2)
+    β = round(coef(ols)[2],2)
+    σ= stderror(ols)[2]
+    t = β/σ
+    Pval = round(ccdf.(FDist(1, dof_residual(ols)), abs2.(t)),3)
+    X = linspace(minimum(x),maximum(x),2)
+    c=Coordinates(x,y)
+    min=minimum(x)
+    max=maximum(x)
+    if β>0
+        figure=@pgf TikzPicture(
+            Axis(
+                {
+                title = Title,
+                xlabel= x_label,
+                ylabel=y_label,
+                },
+                PlotInc({domain = "$min:$max"},Expression("$α +($β)*x")),
+                LegendEntry("y=$α+($β)x (Pval=$Pval)"),
+                PlotInc({scatter,"only marks","mark options={scale=0.5,solid,black}"},c)
+                ))
+            else
+                figure=@pgf TikzPicture(
+                    Axis(
+                        {
+                        title = Title,
+                        xlabel= x_label,
+                        ylabel=y_label,
+                        },
+                        PlotInc({domain = "$min:$max"},Expression("$α +($β)*x")),
+                        LegendEntry("y=$α ($β)x (Pval=$Pval)"),
+                        PlotInc({scatter,"only marks","mark options={scale=0.5,solid},black"},c)
+                        ))
+            end
+            return figure
+
 end
