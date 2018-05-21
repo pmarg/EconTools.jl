@@ -27,12 +27,12 @@
         }, 
         {
             "location": "/lib/PlottingTools/", 
-            "text": "PlottingTools\n\n\n#\n\n\nEconTools.scatterplot\n \n \nFunction\n.\n\n\nscatterplot(x,y)\n\n\n\n\nReturns a scatter plot with a fitted line. The estimation uses GLM.jl\n\n\nsource", 
+            "text": "PlottingTools\n\n\nscatterplot\npgfplots_scatter", 
             "title": "PlottingTools"
         }, 
         {
             "location": "/lib/PlottingTools/#plottingtools", 
-            "text": "#  EconTools.scatterplot     Function .  scatterplot(x,y)  Returns a scatter plot with a fitted line. The estimation uses GLM.jl  source", 
+            "text": "scatterplot\npgfplots_scatter", 
             "title": "PlottingTools"
         }, 
         {
