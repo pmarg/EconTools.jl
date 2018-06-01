@@ -13,20 +13,20 @@ sampling weights `sampling_weights`
 function descriptive_stats(table,var::String,bycolumns::Tuple;weight="None")
     if weight=="None"
         y= groupby(@NT(
-        avg=mean,
-        std1=std,
-        q25=z->quantile(z,0.25),
-        median1 = median,
-        q75=z->quantile(z,0.25)
+        MEAN=mean,
+        STD=std,
+        Q25=z->quantile(z,0.25),
+        MEDIAN = median,
+        Q75=z->quantile(z,0.25)
         ),
         table,bycolumns,select=Symbol(var))
     else
         y= groupby(@NT(
-        avg=z->mean(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
-        std1=z->std(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
-        q25=z->quantile(column(z,Symbol(var)),0.25),
-        median1=z->median(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
-        q75=z->quantile(column(z,Symbol(var)),0.75)
+        MEAN=z->mean(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
+        STD=z->std(column(z,Symbol(var)),weights(column(z,Symbol(weight))), corrected=false),
+        Q25=z->quantile(column(z,Symbol(var)),0.25),
+        MEDIAN=z->median(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
+        Q75=z->quantile(column(z,Symbol(var)),0.75)
         ),
         table,bycolumns,select=(Symbol(var),Symbol(weight)))
     end
@@ -36,20 +36,20 @@ end
 function descriptive_stats(table,var::String,bycolumn::Symbol;weight="None")
     if weight=="None"
         y= groupby(@NT(
-        avg=mean,
-        std1=std,
-        q25=z->quantile(z,0.25),
-        median1 = median,
-        q75=z->quantile(z,0.25)
+        MEAN=mean,
+        STD=std,
+        Q25=z->quantile(z,0.25),
+        MEDIAN = median,
+        Q75=z->quantile(z,0.25)
         ),
         table,bycolumn,select=Symbol(var))
     else
         y= groupby(@NT(
-        avg=z->mean(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
-        std1=z->std(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
-        q25=z->quantile(column(z,Symbol(var)),0.25),
-        median1=z->median(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
-        q75=z->quantile(column(z,Symbol(var)),0.75)
+        MEAN=z->mean(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
+        STD=z->std(column(z,Symbol(var)),weights(column(z,Symbol(weight))), corrected=false),
+        Q25=z->quantile(column(z,Symbol(var)),0.25),
+        MEDIAN=z->median(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
+        Q75=z->quantile(column(z,Symbol(var)),0.75)
         ),
         table,bycolumn,select=(Symbol(var),Symbol(weight)))
     end
