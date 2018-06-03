@@ -26,10 +26,11 @@ end
 """
     tauchen(N::Integer=18, ρ::Real=0.96, σ::Real=0.045, μ::Real=0.0, n_std::Integer=4)
 Tauchen's (1996) method for approximating AR(1) process with a finite markov chain
+
 ```math
     y_t = \\mu + \\rho y_{t-1} + \\epsilon_t
 ```
-where ``\\epsilon_t \\sim N (0, \\sigma^2)``
+where \$\\epsilon_t \\sim N (0, \\sigma^2)\$
 ##### Arguments
 - `N::Integer`: Number of points in markov process
 - `ρ::Real` : Persistence parameter in AR(1) process

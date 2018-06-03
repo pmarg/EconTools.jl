@@ -1,4 +1,4 @@
-# PlottingTools
+# QuantTools
 
 ```@docs
 tauchen
