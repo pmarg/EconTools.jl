@@ -36,6 +36,16 @@
             "title": "PlottingTools"
         }, 
         {
+            "location": "/lib/QuantTools/", 
+            "text": "QuantTools\n\n\n#\n\n\nEconTools.tauchen\n \n \nFunction\n.\n\n\ntauchen(N::Integer=18, \u03c1::Real=0.96, \u03c3::Real=0.045, \u03bc::Real=0.0, n_std::Integer=4)\n\n\n\n\nTauchen's (1996) method for approximating AR(1) process with a finite markov chain\n\n\n\n\n\n    y_t = \\mu + \\rho y_{t-1} + \\epsilon_t\n\n\n\n\n\nwhere $\\epsilon_t \\sim N (0, \\sigma^2)$\n\n\nArguments\n\n\n\n\nN::Integer\n: Number of points in markov process\n\n\n\u03c1::Real\n : Persistence parameter in AR(1) process\n\n\n\u03c3::Real\n : Standard deviation of random component of AR(1) process\n\n\n\u03bc::Real(0.0)\n : Mean of AR(1) process\n\n\nn_std::Integer(4)\n : The number of standard deviations to each side the process should span\n\n\n\n\nReturns\n\n\n\n\ngrid, \u03a0, \u03a0_cdf\n : The grid, the transition matrix and CDF of transition matrix\n\n\n\n\nNotes\n\n\n\n\nThis function has been modified by QuantEcon.jl\n\n\n\n\nsource\n\n\n#\n\n\nEconTools.expspace\n \n \nFunction\n.\n\n\nexpspace(x_min::Float64, x_max::Float64)::Array{Float64}, x_scale::Float64,n_x::Int64)\n\n\n\n\nThis generates a vector of length n_x between x_min and x_max, where the spacing is controlled by x_scale.  When x_scale == 1, this is equivalent to linspace.  When x_scale \n 1, the points are closer together near x_min.  When 0 \n x_scale \n 1, the points are closer together near x_max.\n\n\nsource", 
+            "title": "QuantTools"
+        }, 
+        {
+            "location": "/lib/QuantTools/#quanttools", 
+            "text": "#  EconTools.tauchen     Function .  tauchen(N::Integer=18, \u03c1::Real=0.96, \u03c3::Real=0.045, \u03bc::Real=0.0, n_std::Integer=4)  Tauchen's (1996) method for approximating AR(1) process with a finite markov chain   \n    y_t = \\mu + \\rho y_{t-1} + \\epsilon_t   where $\\epsilon_t \\sim N (0, \\sigma^2)$  Arguments   N::Integer : Number of points in markov process  \u03c1::Real  : Persistence parameter in AR(1) process  \u03c3::Real  : Standard deviation of random component of AR(1) process  \u03bc::Real(0.0)  : Mean of AR(1) process  n_std::Integer(4)  : The number of standard deviations to each side the process should span   Returns   grid, \u03a0, \u03a0_cdf  : The grid, the transition matrix and CDF of transition matrix   Notes   This function has been modified by QuantEcon.jl   source  #  EconTools.expspace     Function .  expspace(x_min::Float64, x_max::Float64)::Array{Float64}, x_scale::Float64,n_x::Int64)  This generates a vector of length n_x between x_min and x_max, where the spacing is controlled by x_scale.  When x_scale == 1, this is equivalent to linspace.  When x_scale   1, the points are closer together near x_min.  When 0   x_scale   1, the points are closer together near x_max.  source", 
+            "title": "QuantTools"
+        }, 
+        {
             "location": "/lib/", 
             "text": "Index\n\n\n\n\nEconTools.descriptive_stats\n\n\nEconTools.expspace\n\n\nEconTools.save_csv\n\n\nEconTools.scatterplot\n\n\nEconTools.tauchen", 
             "title": "Index"

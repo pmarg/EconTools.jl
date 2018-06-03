@@ -8,7 +8,7 @@
   
   <meta name="author" content="Panagiotis Margaris">
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>DataSetTools - EconTools.jl</title>
+  <title>QuantTools - EconTools.jl</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -18,9 +18,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "DataSetTools";
-    var mkdocs_page_input_path = "lib/DataSetTools.md";
-    var mkdocs_page_url = "/lib/DataSetTools/";
+    var mkdocs_page_name = "QuantTools";
+    var mkdocs_page_input_path = "lib/QuantTools.md";
+    var mkdocs_page_url = "/lib/QuantTools/";
   </script>
   
   <script src="../../js/jquery-2.1.1.min.js"></script>
@@ -57,23 +57,23 @@
 		
     <span class="caption-text">Functions</span>
     <ul class="subnav">
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">DataSetTools</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#datasettools">DataSetTools</a></li>
-    
-
-    </ul>
+    <a class="" href="../DataSetTools/">DataSetTools</a>
                 </li>
                 <li class="">
                     
     <a class="" href="../PlottingTools/">PlottingTools</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../QuantTools/">QuantTools</a>
+    <a class="current" href="./">QuantTools</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#quanttools">QuantTools</a></li>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -109,10 +109,10 @@
         
       
     
-    <li>DataSetTools</li>
+    <li>QuantTools</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/pmarg/EconTools.jl/edit/master/docs/lib/DataSetTools.md"
+        <a href="https://github.com/pmarg/EconTools.jl/edit/master/docs/lib/QuantTools.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -122,23 +122,44 @@
           <div role="main">
             <div class="section">
               
-                <p><a id='DataSetTools-1'></a></p>
-<h1 id="datasettools">DataSetTools</h1>
-<p><a id='EconTools.descriptive_stats' href='#EconTools.descriptive_stats'>#</a>
-<strong><code>EconTools.descriptive_stats</code></strong> &mdash; <em>Function</em>.</p>
-<pre><code>descriptive_stats(table,var::String,bycolumn::Tuple;weight=&quot;None&quot;)
+                <p><a id='QuantTools-1'></a></p>
+<h1 id="quanttools">QuantTools</h1>
+<p><a id='EconTools.tauchen' href='#EconTools.tauchen'>#</a>
+<strong><code>EconTools.tauchen</code></strong> &mdash; <em>Function</em>.</p>
+<pre><code>tauchen(N::Integer=18, ρ::Real=0.96, σ::Real=0.045, μ::Real=0.0, n_std::Integer=4)
 </code></pre>
 
-<p>Returns a new table containing  the mean, standard deviation, 1st, 2nd and 3rd quantiles of variable <code>var</code> by a selection of tuple of columns <code>bycolumns</code>. Weights are optional and if specified, the function returns the weighted descriptive statistics.</p>
-<p>For example <code>descriptive_stats(data,"income",(:age,:gender),weight="sampling_weights")</code> returns the descriptive statistics of income from table <code>data</code> by the columns name <code>age</code> and <code>gender</code>, weighted by the sampling weights <code>sampling_weights</code></p>
-<p><a target='_blank' href='https://github.com/pmarg/EconTools.jl/blob/a383849f8f583c20ef9cbaedae65dcd5f47f2439/src/DataSetTools.jl#L3-L12' class='documenter-source'>source</a><br></p>
-<p><a id='EconTools.save_csv' href='#EconTools.save_csv'>#</a>
-<strong><code>EconTools.save_csv</code></strong> &mdash; <em>Function</em>.</p>
-<pre><code>save_csv(path::String,table::DNextTable)
+<p>Tauchen's (1996) method for approximating AR(1) process with a finite markov chain</p>
+<p>
+<script type="math/tex; mode=display">
+    y_t = \mu + \rho y_{t-1} + \epsilon_t
+</script>
+</p>
+<p>where $\epsilon_t \sim N (0, \sigma^2)$</p>
+<p><strong>Arguments</strong></p>
+<ul>
+<li><code>N::Integer</code>: Number of points in markov process</li>
+<li><code>ρ::Real</code> : Persistence parameter in AR(1) process</li>
+<li><code>σ::Real</code> : Standard deviation of random component of AR(1) process</li>
+<li><code>μ::Real(0.0)</code> : Mean of AR(1) process</li>
+<li><code>n_std::Integer(4)</code> : The number of standard deviations to each side the process should span</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><code>grid, Π, Π_cdf</code> : The grid, the transition matrix and CDF of transition matrix</li>
+</ul>
+<p><strong>Notes</strong></p>
+<ul>
+<li>This function has been modified by QuantEcon.jl</li>
+</ul>
+<p><a target='_blank' href='https://github.com/pmarg/EconTools.jl/blob/a383849f8f583c20ef9cbaedae65dcd5f47f2439/src/QuantTools.jl#L26-L45' class='documenter-source'>source</a><br></p>
+<p><a id='EconTools.expspace' href='#EconTools.expspace'>#</a>
+<strong><code>EconTools.expspace</code></strong> &mdash; <em>Function</em>.</p>
+<pre><code>expspace(x_min::Float64, x_max::Float64)::Array{Float64}, x_scale::Float64,n_x::Int64)
 </code></pre>
 
-<p>Saves table as CSV at the specified path. For example <code>save_csv("Folder\data.csv",t)</code> saves the table <code>t</code> in the subfolder <code>Folder</code> under the name <code>data.csv</code></p>
-<p><a target='_blank' href='https://github.com/pmarg/EconTools.jl/blob/a383849f8f583c20ef9cbaedae65dcd5f47f2439/src/DataSetTools.jl#L59-L64' class='documenter-source'>source</a><br></p>
+<p>This generates a vector of length n_x between x_min and x_max, where the spacing is controlled by x_scale.  When x_scale == 1, this is equivalent to linspace.  When x_scale &gt; 1, the points are closer together near x_min.  When 0 &lt; x_scale &lt; 1, the points are closer together near x_max.</p>
+<p><a target='_blank' href='https://github.com/pmarg/EconTools.jl/blob/a383849f8f583c20ef9cbaedae65dcd5f47f2439/src/QuantTools.jl#L3-L10' class='documenter-source'>source</a><br></p>
               
             </div>
           </div>
@@ -146,10 +167,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../PlottingTools/" class="btn btn-neutral float-right" title="PlottingTools">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../" class="btn btn-neutral float-right" title="Index">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../.." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../PlottingTools/" class="btn btn-neutral" title="PlottingTools"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -177,10 +198,10 @@
           <a href="https://github.com/pmarg/EconTools.jl/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../PlottingTools/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../PlottingTools/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
