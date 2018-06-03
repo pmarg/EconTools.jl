@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/", 
-            "text": "EconTools Documentation\n\n\nA collection of functions for economics.\n\n\n\n\nFunctions\n\n\n\n\nDataSetTools\n\n\nPlottingTools", 
+            "text": "EconTools Documentation\n\n\nA collection of functions for economics.\n\n\n\n\nFunctions\n\n\n\n\nDataSetTools\n\n\nPlottingTools\n\n\nPlottingTools", 
             "title": "Home"
         }, 
         {
@@ -12,7 +12,7 @@
         }, 
         {
             "location": "/#functions", 
-            "text": "DataSetTools  PlottingTools", 
+            "text": "DataSetTools  PlottingTools  PlottingTools", 
             "title": "Functions"
         }, 
         {
@@ -37,12 +37,12 @@
         }, 
         {
             "location": "/lib/", 
-            "text": "Index\n\n\n\n\nEconTools.descriptive_stats\n\n\nEconTools.save_csv\n\n\nEconTools.scatterplot", 
+            "text": "Index\n\n\n\n\nEconTools.descriptive_stats\n\n\nEconTools.expspace\n\n\nEconTools.save_csv\n\n\nEconTools.scatterplot\n\n\nEconTools.tauchen", 
             "title": "Index"
         }, 
         {
             "location": "/lib/#index", 
-            "text": "EconTools.descriptive_stats  EconTools.save_csv  EconTools.scatterplot", 
+            "text": "EconTools.descriptive_stats  EconTools.expspace  EconTools.save_csv  EconTools.scatterplot  EconTools.tauchen", 
             "title": "Index"
         }
     ]

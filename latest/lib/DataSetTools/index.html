@@ -127,14 +127,14 @@
 
 <p>Returns a new table containing  the mean, standard deviation, 1st, 2nd and 3rd quantiles of variable <code>var</code> by a selection of tuple of columns <code>bycolumns</code>. Weights are optional and if specified, the function returns the weighted descriptive statistics.</p>
 <p>For example <code>descriptive_stats(data,"income",(:age,:gender),weight="sampling_weights")</code> returns the descriptive statistics of income from table <code>data</code> by the columns name <code>age</code> and <code>gender</code>, weighted by the sampling weights <code>sampling_weights</code></p>
-<p><a target='_blank' href='https://github.com/pmarg/EconTools.jl/blob/3db728713cc887d90599397f3e7c1147a878d349/src/DataSetTools.jl#L3-L12' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/pmarg/EconTools.jl/blob/4b1b081129aacdedfb6ea0a8d4358b851db9521e/src/DataSetTools.jl#L3-L12' class='documenter-source'>source</a><br></p>
 <p><a id='EconTools.save_csv' href='#EconTools.save_csv'>#</a>
 <strong><code>EconTools.save_csv</code></strong> &mdash; <em>Function</em>.</p>
 <pre><code>save_csv(path::String,table::DNextTable)
 </code></pre>
 
 <p>Saves table as CSV at the specified path. For example <code>save_csv("Folder\data.csv",t)</code> saves the table <code>t</code> in the subfolder <code>Folder</code> under the name <code>data.csv</code></p>
-<p><a target='_blank' href='https://github.com/pmarg/EconTools.jl/blob/3db728713cc887d90599397f3e7c1147a878d349/src/DataSetTools.jl#L59-L64' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/pmarg/EconTools.jl/blob/4b1b081129aacdedfb6ea0a8d4358b851db9521e/src/DataSetTools.jl#L59-L64' class='documenter-source'>source</a><br></p>
               
             </div>
           </div>
