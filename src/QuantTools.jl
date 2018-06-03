@@ -27,15 +27,15 @@ end
     tauchen(N::Integer=18, ρ::Real=0.96, σ::Real=0.045, μ::Real=0.0, n_std::Integer=4)
 Tauchen's (1996) method for approximating AR(1) process with a finite markov chain
 ```math
-    y_t = \mu + \rho y_{t-1} + \epsilon_t
+    y_t = \\mu + \\rho y_{t-1} + \\epsilon_t
 ```
-where ``\epsilon_t \sim N (0, \sigma^2)``
+where ``\\epsilon_t \\sim N (0, \\sigma^2)``
 ##### Arguments
 - `N::Integer`: Number of points in markov process
 - `ρ::Real` : Persistence parameter in AR(1) process
 - `σ::Real` : Standard deviation of random component of AR(1) process
 - `μ::Real(0.0)` : Mean of AR(1) process
-- `n_std::Integer(3)` : The number of standard deviations to each side the process
+- `n_std::Integer(4)` : The number of standard deviations to each side the process
   should span
 ##### Returns
 - `grid, Π, Π_cdf` : The grid, the transition matrix and CDF of transition matrix
