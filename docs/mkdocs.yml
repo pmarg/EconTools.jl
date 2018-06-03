@@ -25,4 +25,5 @@ pages:
   - Functions:
       - DataSetTools: lib/DataSetTools.md
       - PlottingTools: lib/PlottingTools.md
+      - QuantTools: lib/QuantTools.md
   - Index: lib/index.md
