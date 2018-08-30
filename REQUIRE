@@ -9,3 +9,9 @@ PGFPlotsX
 FixedEffectModels
 RegressionTables
 Interpolations
+SymEngine
+KernelDensity
+NLopt
+NLsolve
+JuMP
+Optim
