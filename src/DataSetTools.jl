@@ -70,3 +70,51 @@ function save_csv(path::String,t)
         end
     end
 end
+
+function save_descriptive(table,var::String,bycolumns::Tuple,Parent::String,Name::String;weight="None")
+    if weight=="None"
+        y= groupby(@NT(
+        MEAN=mean,
+        STD=std,
+        Q25=z->quantile(z,0.25),
+        MEDIAN = median,
+        Q75=z->quantile(z,0.25)
+        ),
+        table,bycolumns,select=Symbol(var))
+    else
+        y= groupby(@NT(
+        MEAN=z->mean(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
+        STD=z->std(column(z,Symbol(var)),weights(column(z,Symbol(weight))), corrected=false),
+        Q25=z->quantile(column(z,Symbol(var)),0.25),
+        MEDIAN=z->median(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
+        Q75=z->quantile(column(z,Symbol(var)),0.75)
+        ),
+        table,bycolumns,select=(Symbol(var),Symbol(weight)))
+    end
+    save_csv(joinpath(Parent,Name),y)
+    return y
+end
+
+function save_descriptive(table,var::String,bycolumn::Symbol,Parent::String,Name::String;weight="None")
+    if weight=="None"
+        y= groupby(@NT(
+        MEAN=mean,
+        STD=std,
+        Q25=z->quantile(z,0.25),
+        MEDIAN = median,
+        Q75=z->quantile(z,0.25)
+        ),
+        table,bycolumn,select=Symbol(var))
+    else
+        y= groupby(@NT(
+        MEAN=z->mean(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
+        STD=z->std(column(z,Symbol(var)),weights(column(z,Symbol(weight))), corrected=false),
+        Q25=z->quantile(column(z,Symbol(var)),0.25),
+        MEDIAN=z->median(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
+        Q75=z->quantile(column(z,Symbol(var)),0.75)
+        ),
+        table,bycolumn,select=(Symbol(var),Symbol(weight)))
+    end
+    save_csv(joinpath(Parent,Name),y)
+    return y
+end
