@@ -71,7 +71,7 @@ function save_csv(path::String,t)
     end
 end
 
-function save_descriptive(table,var::String,bycolumns::Tuple,Parent::String,Name::String;weight="None")
+function descriptive_stats(table,var::String,bycolumns::Tuple,Parent::String,extra::String;weight="None")
     if weight=="None"
         y= groupby(@NT(
         MEAN=mean,
@@ -91,11 +91,16 @@ function save_descriptive(table,var::String,bycolumns::Tuple,Parent::String,Name
         ),
         table,bycolumns,select=(Symbol(var),Symbol(weight)))
     end
+    Name = var*"_by_"
+    for i=1:size(bycolumns,1)
+        Name = Name*"_"*String(bycolumns[i])
+    end
+        Name = Name*"_"*extra*".csv"
     save_csv(joinpath(Parent,Name),y)
     return y
 end
 
-function save_descriptive(table,var::String,bycolumn::Symbol,Parent::String,Name::String;weight="None")
+function descriptive_stats(table,var::String,bycolumn::Symbol,Parent::String,extra::String;weight="None")
     if weight=="None"
         y= groupby(@NT(
         MEAN=mean,
@@ -115,6 +120,62 @@ function save_descriptive(table,var::String,bycolumn::Symbol,Parent::String,Name
         ),
         table,bycolumn,select=(Symbol(var),Symbol(weight)))
     end
+    Name = var*"_by_"*String(bycolumn)*"_"*extra*".csv"
+
+    save_csv(joinpath(Parent,Name),y)
+    return y
+end
+
+function descriptive_stats(table,var::String,bycolumn::Symbol,Parent::String;weight="None")
+    if weight=="None"
+        y= groupby(@NT(
+        MEAN=mean,
+        STD=std,
+        Q25=z->quantile(z,0.25),
+        MEDIAN = median,
+        Q75=z->quantile(z,0.25)
+        ),
+        table,bycolumn,select=Symbol(var))
+    else
+        y= groupby(@NT(
+        MEAN=z->mean(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
+        STD=z->std(column(z,Symbol(var)),weights(column(z,Symbol(weight))), corrected=false),
+        Q25=z->quantile(column(z,Symbol(var)),0.25),
+        MEDIAN=z->median(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
+        Q75=z->quantile(column(z,Symbol(var)),0.75)
+        ),
+        table,bycolumn,select=(Symbol(var),Symbol(weight)))
+    end
+    Name = var*"_by_"*String(bycolumn)*".csv"
+    save_csv(joinpath(Parent,Name),y)
+    return y
+end
+
+function descriptive_stats(table,var::String,bycolumns::Tuple,Parent::String;weight="None")
+    if weight=="None"
+        y= groupby(@NT(
+        MEAN=mean,
+        STD=std,
+        Q25=z->quantile(z,0.25),
+        MEDIAN = median,
+        Q75=z->quantile(z,0.25)
+        ),
+        table,bycolumns,select=Symbol(var))
+    else
+        y= groupby(@NT(
+        MEAN=z->mean(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
+        STD=z->std(column(z,Symbol(var)),weights(column(z,Symbol(weight))), corrected=false),
+        Q25=z->quantile(column(z,Symbol(var)),0.25),
+        MEDIAN=z->median(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
+        Q75=z->quantile(column(z,Symbol(var)),0.75)
+        ),
+        table,bycolumns,select=(Symbol(var),Symbol(weight)))
+    end
+    Name = var*"_by_"
+    for i=1:size(bycolumns,1)
+            Name = Name*"_"*String(bycolumns[i])
+    end
+    Name = Name*".csv"
     save_csv(joinpath(Parent,Name),y)
     return y
 end

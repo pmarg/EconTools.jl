@@ -6,3 +6,6 @@ GLM
 DataFrames
 Distributions
 PGFPlotsX
+FixedEffectModels
+RegressionTables
+Interpolations

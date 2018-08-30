@@ -76,31 +76,9 @@ function pgfplots_scatter(x,y;Title="Title",x_label="X",y_label="Y")
 end
 
 
-function plot_descriptive(table,var::String,bycolumns::Tuple;weight="None",select="MEAN")
-    if weight=="None"
-        y= groupby(@NT(
-        MEAN=mean,
-        STD=std,
-        Q25=z->quantile(z,0.25),
-        MEDIAN = median,
-        Q75=z->quantile(z,0.25)
-        ),
-        table,bycolumns,select=Symbol(var))
-    else
-        y= groupby(@NT(
-        MEAN=z->mean(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
-        STD=z->std(column(z,Symbol(var)),weights(column(z,Symbol(weight))), corrected=false),
-        Q25=z->quantile(column(z,Symbol(var)),0.25),
-        MEDIAN=z->median(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
-        Q75=z->quantile(column(z,Symbol(var)),0.75)
-        ),
-        table,bycolumns,select=(Symbol(var),Symbol(weight)))
-    end
-    x = select(y,Symbol(select))
-    plot(x)
-end
 
-function plot_descriptive(table,var::String,bycolumn::Symbol;weight="None")
+
+function plot_descriptive(table,var::String,bycolumn::Symbol;weight="None",label="")
     if weight=="None"
         y= groupby(@NT(
         MEAN=mean,
@@ -121,34 +99,12 @@ function plot_descriptive(table,var::String,bycolumn::Symbol;weight="None")
         table,bycolumn,select=(Symbol(var),Symbol(weight)))
     end
     x = select(y,:MEAN)
-    plot(x)
+    plot(x,lab=label)
 end
 
-function plot_descriptive!(table,var::String,bycolumns::Tuple;weight="None")
-    if weight=="None"
-        y= groupby(@NT(
-        MEAN=mean,
-        STD=std,
-        Q25=z->quantile(z,0.25),
-        MEDIAN = median,
-        Q75=z->quantile(z,0.25)
-        ),
-        table,bycolumns,select=Symbol(var))
-    else
-        y= groupby(@NT(
-        MEAN=z->mean(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
-        STD=z->std(column(z,Symbol(var)),weights(column(z,Symbol(weight))), corrected=false),
-        Q25=z->quantile(column(z,Symbol(var)),0.25),
-        MEDIAN=z->median(column(z,Symbol(var)),weights(column(z,Symbol(weight)))),
-        Q75=z->quantile(column(z,Symbol(var)),0.75)
-        ),
-        table,bycolumns,select=(Symbol(var),Symbol(weight)))
-    end
-    x = select(y,:MEAN)
-    plot!(x)
-end
 
-function plot_descriptive!(table,var::String,bycolumn::Symbol;weight="None")
+
+function plot_descriptive!(table,var::String,bycolumn::Symbol;weight="None",label="")
     if weight=="None"
         y= groupby(@NT(
         MEAN=mean,
@@ -169,5 +125,5 @@ function plot_descriptive!(table,var::String,bycolumn::Symbol;weight="None")
         table,bycolumn,select=(Symbol(var),Symbol(weight)))
     end
     x = select(y,:MEAN)
-    plot!(x)
+    plot!(x,lab=label)
 end
