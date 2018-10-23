@@ -1,3 +1,4 @@
+#=
 using Plots, PGFPlotsX
 import StatsBase: dof_residual
 import GLM: lm, @formula, coef, stderror
@@ -85,7 +86,7 @@ function plot_descriptive(table,var::String,bycolumn::Symbol;weight="None",label
         STD=std,
         Q25=z->quantile(z,0.25),
         MEDIAN = median,
-        Q75=z->quantile(z,0.25)
+        Q75=z->quantile(z,0.75)
         ),
         table,bycolumn,select=Symbol(var))
     else
@@ -111,7 +112,7 @@ function plot_descriptive!(table,var::String,bycolumn::Symbol;weight="None",labe
         STD=std,
         Q25=z->quantile(z,0.25),
         MEDIAN = median,
-        Q75=z->quantile(z,0.25)
+        Q75=z->quantile(z,0.75)
         ),
         table,bycolumn,select=Symbol(var))
     else
@@ -127,3 +128,4 @@ function plot_descriptive!(table,var::String,bycolumn::Symbol;weight="None",labe
     x = select(y,:MEAN)
     plot!(x,lab=label)
 end
+=#

@@ -91,3 +91,130 @@ function tauchen(N::Integer=9, ρ::Real=0.96, σ::Real=0.045, μ::Real=0.0, n_st
 
     return grid, Π, Π_cdf
 end
+
+
+
+"""
+    function find_interval(t::Array{Float64}, t0::Float64)
+"""
+function find_interval(t::Array{Float64}, t0::Float64)
+
+i = 0
+nf = true
+
+# get size of array
+N = length(t)
+
+# check boundaries first
+if  N <= 1
+    i = 1
+elseif t0 <= t[2]
+    i = 1
+elseif  t0 >= t[N-1]
+    i = N - 1
+else
+    i_min = 2
+    i_max = N - 2
+
+    # if t(i) = t(i+1) for some i,
+    # then there may be two potential intervals
+
+    while nf
+        i=convert(Int,round((i_min + i_max) / 2))
+        if t0 < t[i]
+            i_max = i - 1
+        elseif t0 > t[i+1]
+            i_min = i + 1;
+        else
+            nf = false
+        end
+
+    end
+end
+return i
+end
+"""
+    function interp2d_linear(x::Array{Float64}, y::Array{Float64}, f::Array{Float64}, x0::Float64, y0::Float64)
+"""
+function interp2d_linear(x::Array{Float64}, y::Array{Float64}, f::Array{Float64}, x0::Float64, y0::Float64)
+
+# first, find interval for x0
+i0 = find_interval(x, x0)
+i1 = i0 + 1
+xa = x[i0]
+xb = x[i1]
+xd = (x0 - xa)/(xb - xa)
+xdc = (xb - x0)/(xb - xa)
+
+# second, find interval for y0
+j0 = find_interval(y, y0)
+j1 = j0 + 1
+ya = y[j0]
+yb = y[j1]
+yd = (y0 - ya) / (yb - ya)
+ydc = (yb - y0) / (yb - ya)
+
+# obtain f values near (x0, y0)
+f00 = f[i0,j0]
+f01 = f[i0,j1]
+f10 = f[i1,j0]
+f11 = f[i1,j1]
+
+# first interpolate along x
+#c0 = f00 * (1.0d0 - xd) + f10 * xd
+#c1 = f01 * (1.0d0 - xd) + f11 * xd
+c0 = f00*xdc + f10*xd
+c1 = f01*xdc + f11*xd
+
+# then interpolate along y
+#c = c0 * (1.0d0 - yd) + c1 * yd
+c = c0 * ydc + c1 * yd
+return c
+end
+"""
+    function indices(n_a, n_h, n_zl, n_zh,ind)
+"""
+function indices(n_a, n_h, n_zl, n_zh,ind)
+    i_a  = convert(Int, floor((ind-0.05)/(n_h*n_zl*n_zh)))+1;
+    i_h  = convert(Int, mod(floor((ind-0.05)/(n_zl*n_zh)),n_h))+1;
+    i_zl = convert(Int, mod(floor((ind-0.05)/n_zh),n_zl))+1
+    i_zh = convert(Int, mod(floor(ind-0.05),n_zh))+1
+
+    return i_a, i_h, i_zl, i_zh
+end
+"""
+    function calc_markov_shock_from_uniform_rv(u::Float64, Pz_cdf::Array{Float64})
+"""
+function calc_markov_shock_from_uniform_rv(u::Float64, Pz_cdf::Array{Float64})
+    done = false
+    i_zn = 0
+
+    while done==false
+        i_zn = i_zn + 1;
+        done = (u < Pz_cdf[i_zn]);
+    end
+    return i_zn
+end
+
+"""
+    function simulate_markov_shocks(N::Int64, sim_z::Array{Int64}, Pz_cdf::Array{Float64})
+"""
+function simulate_markov_shocks(N::Int64, sim_z::Array{Int64}, Pz_cdf::Array{Float64})
+    sim_zn=zeros(Int,N)
+
+    u=rand(N)
+    for i = 1:N
+        sim_zn[i] = calc_markov_shock_from_uniform_rv(u[i], Pz_cdf[sim_z[i],:]);
+    end
+    return sim_zn
+end
+
+function simulate_markov_shocks(N::Int64, Pz_initial_cdf::Array{Float64})
+    sim_z=zeros(Int,N)
+    u=rand(N)
+
+    for i = 1:N
+        sim_z[i] = calc_markov_shock_from_uniform_rv(u[i], Pz_initial_cdf);
+    end
+    return sim_z
+end

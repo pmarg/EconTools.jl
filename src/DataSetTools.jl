@@ -1,3 +1,4 @@
+#=
 using JuliaDB, Stats
 
 """
@@ -56,20 +57,7 @@ function descriptive_stats(table,var::String,bycolumn::Symbol;weight="None")
     return y
 end
 
-"""
-    save_csv(path::String,table::DNextTable)
-Saves table as CSV at the specified path.
-For example `save_csv("Folder\\data.csv",t)` saves the table `t` in the
-subfolder `Folder` under the name `data.csv`
-"""
-function save_csv(path::String,t)
-    open(path,"w") do fid
-        println(fid,join(colnames(t),','))
-        for i in collect(t)
-            println(fid,join(i,','))
-        end
-    end
-end
+
 
 function descriptive_stats(table,var::String,bycolumns::Tuple,Parent::String,extra::String;weight="None")
     if weight=="None"
@@ -179,3 +167,19 @@ function descriptive_stats(table,var::String,bycolumns::Tuple,Parent::String;wei
     save_csv(joinpath(Parent,Name),y)
     return y
 end
+
+"""
+    save_csv(path::String,table::DNextTable)
+Saves table as CSV at the specified path.
+For example `save_csv("Folder\\data.csv",t)` saves the table `t` in the
+subfolder `Folder` under the name `data.csv`
+"""
+function save_csv(path::String,t)
+    open(path,"w") do fid
+        println(fid,join(colnames(t),','))
+        for i in collect(t)
+            println(fid,join(i,','))
+        end
+    end
+end
+=#
