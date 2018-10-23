@@ -26,7 +26,6 @@ end
 """
     tauchen(N::Integer=18, ρ::Real=0.96, σ::Real=0.045, μ::Real=0.0, n_std::Integer=4)
 Tauchen's (1996) method for approximating AR(1) process with a finite markov chain
-
 ```math
     y_t = \\mu + \\rho y_{t-1} + \\epsilon_t
 ```
@@ -46,11 +45,11 @@ where \$\\epsilon_t \\sim N (0, \\sigma^2)\$
 function tauchen(N::Integer=9, ρ::Real=0.96, σ::Real=0.045, μ::Real=0.0, n_std::Integer=4)
     if N > 1
         a_bar = n_std * sqrt(σ^2 / (1 - ρ^2))
-        y = linspace(-a_bar, a_bar, N)
+        y = range(-a_bar,stop= a_bar,length= N)
         d = y[2] - y[1]
     else
         a_bar = 0.0
-        y = linspace(-a_bar, a_bar, N)
+        y = range(-a_bar,stop= a_bar,length= N)
     end
     # Construct grid
 
@@ -71,7 +70,7 @@ function tauchen(N::Integer=9, ρ::Real=0.96, σ::Real=0.045, μ::Real=0.0, n_st
                            cdf(Normal(),(y[col] - ρ*y[row] - d/2) / σ))
                 end
             end
-            Π_cdf=cumsum(Π,2)
+            Π_cdf=cumsum(Π,dims=2)
         else
             Π = zeros(N)
             Π[1] = cdf(Normal(),(y[1] + d/2) / σ)
@@ -80,7 +79,7 @@ function tauchen(N::Integer=9, ρ::Real=0.96, σ::Real=0.045, μ::Real=0.0, n_st
                 Π[col] = (cdf(Normal(),(y[col]  + d/2) / σ) -
                        cdf(Normal(),(y[col] - d/2) / σ))
             end
-            Π_cdf=cumsum(Π,1)
+            Π_cdf=cumsum(Π,dims=1)
 
         end
     else
