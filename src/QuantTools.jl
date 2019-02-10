@@ -34,3 +34,10 @@ function simulate_markov_shocks(N::Int64, Pz_initial_cdf::Array{Float64})
     end
     return sim_z
 end
+
+function interpolate_params(cohort,x,range)
+    y1 = interpolate((cohort,),x,Gridded(Linear()))
+    y2 = extrapolate(y1,Line())
+    z=y2(range)
+    return z
+end
