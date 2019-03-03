@@ -1,5 +1,3 @@
-using PGFPlotsX
-import DataFrames:DataFrame
 
 function stata_coordinates(D::DataFrame;thousands=false,millions=false)
     nr = convert(Int,(size(D)[2]-1)/2)
