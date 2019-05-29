@@ -1,3 +1,4 @@
+#=
 function summarise(table,var::Symbol,by::Symbol)
   y = groupby((Mean =  mean,
               STD = std,
@@ -30,4 +31,9 @@ function summarise(table,var::Symbol,by::Tuple,weight::Symbol)
               Median = z->quantile(getfield(columns(z),var),weights(getfield(columns(z),weight)),0.5),
               Q75 = z->quantile(getfield(columns(z),var),weights(getfield(columns(z),weight)),0.75)),
               table, by, select=(var,weight))
+end
+=#
+
+function keep!(df::DataFrame,col::Array{Symbol})
+  df = df[:,col]
 end
