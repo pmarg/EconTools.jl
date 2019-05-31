@@ -37,3 +37,9 @@ end
 function keep!(df::DataFrame,col::Array{Symbol})
   df = df[:,col]
 end
+
+function tabulate(table)
+  y = freqtable(table)
+  z = prop(y)
+  y = hcat(y,z)
+end

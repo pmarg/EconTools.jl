@@ -1,7 +1,7 @@
 module EconTools
 
 using Statistics, Distributions, StatsFuns, Interpolations,  Statistics, StatsBase
-using PGFPlotsX, RCall
+using PGFPlotsX, RCall, FreqTables
 #using JuliaDB
 import DataFrames:DataFrame
 
@@ -15,5 +15,5 @@ include("DataSetTools.jl")
 
 export expspace, tauchen, indices, simulate_markov_shocks, stata_coordinates, interpolate_params
 export load_rds, save_rds, initialize_survey
-export keep!
+export keep!, tabulate
 end # module
