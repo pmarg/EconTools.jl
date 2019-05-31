@@ -14,6 +14,6 @@ include("R.jl")
 include("DataSetTools.jl")
 
 export expspace, tauchen, indices, simulate_markov_shocks, stata_coordinates, interpolate_params
-export load_rds, save_rds, initialize_survey
+export load_rds, save_rds, initialize_survey, svyby
 export keep!, tabulate
 end # module
