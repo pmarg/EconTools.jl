@@ -1,9 +1,9 @@
 module EconTools
 
 using Statistics, Distributions, StatsFuns, Interpolations,  Statistics, StatsBase
-using PGFPlotsX, RCall, FreqTables
+using PGFPlotsX, RCall, FreqTables, DataFrames
 #using JuliaDB
-import DataFrames:DataFrame
+
 
 
 
