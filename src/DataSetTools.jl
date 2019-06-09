@@ -43,3 +43,15 @@ function tabulate(table)
   z = prop(y)
   y = hcat(y,z)
 end
+
+function reshape_results!(mc,D)
+  N = D.N
+  J = D.J
+  temp = zeros(D.N*D.J)
+  Data = DataFrame(temp = temp)
+  for i in fieldnames(MCResults)
+   Data[i] = vec(getfield(mc,i))
+  end
+  deletecols!(Data,temp)
+  return Data
+end
