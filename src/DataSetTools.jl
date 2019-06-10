@@ -55,3 +55,9 @@ function reshape_results!(mc,D)
   deletecols!(Data,:temp)
   return Data
 end
+
+function print_struct(S)
+  for i in fieldnames(typeof(S))
+   println(y ," = ", getfield(S,i))
+  end
+end
