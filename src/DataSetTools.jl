@@ -58,6 +58,6 @@ end
 
 function print_struct(S)
   for i in fieldnames(typeof(S))
-   println(y ," = ", getfield(S,i))
+   println(i ," = ", getfield(S,i))
   end
 end
