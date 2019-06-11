@@ -61,3 +61,12 @@ function print_struct(S)
    println(i ," = ", getfield(S,i))
   end
 end
+
+function print_parameters(P,type)
+  for i ∈ fieldnames(type)
+    println("--------------------")
+    println(typeof(getfield(P,i)))
+    println("--------------------")
+    print_struct(getfield(P,i))
+  end
+end
