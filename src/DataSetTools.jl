@@ -65,7 +65,7 @@ end
 function print_parameters(P)
   for i ∈ fieldnames(typeof(P))
     println("--------------------")
-    println(typeof(getfield(P,i)))
+    @info typeof(getfield(P,i))
     println("--------------------")
     print_struct(getfield(P,i))
   end
