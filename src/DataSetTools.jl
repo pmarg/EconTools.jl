@@ -81,7 +81,9 @@ Example:
 data = percentiles!(df,:age,:income,pctls = [0.1,0.9])
 
 Returns additional columns:
+
 data[:income_p1,:income_p2]
+
 data[:bin_income] # with values 1, 2, 3
 
 """
