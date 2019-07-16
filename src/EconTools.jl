@@ -13,5 +13,5 @@ include("Grids.jl")
 include("DataSetTools.jl")
 
 export expspace, tauchen, indices, simulate_markov_shocks, stata_coordinates, interpolate_params
-export keep!, tabulate, reshape_results!, print_struct, print_parameters
+export keep!, tabulate, reshape_results!, print_struct, print_parameters, percentiles!
 end # module
