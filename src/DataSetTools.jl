@@ -90,90 +90,90 @@ data[:bin_income] # with values 1, 2, 3
 function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
   if length(pctls) == 2
     temp = by(data, by_variable) do df
-       (p1 = quantile(df[variable],pctls[1]),p2 = quantile(df[variable],pctls[2]))
+       (p1 = quantile(df[!,variable],pctls[1]),p2 = quantile(df[!,variable],pctls[2]))
     end
     data = join(data,temp,on = by_variable)
     name = Symbol("bin_$variable")
-    data[name] = 0
-    for i ∈ eachindex(data.variable)
-      if data.variable[i] <= data.p1[i]
-         data[name][i] = 1
-      elseif data.variable[i]> data.p1[i] && data.variable[i]<= data.p2[i]
-         data[name][i] = 2
-      elseif data.variable[i] > data.p2[i]
-         data[name][i] = 3
+    data[!,name].= 0
+    for i ∈ eachindex(data[!,variable])
+      if data[i,variable] <= data[i,:p1]
+         data[i,name] = 1
+      elseif data[i,variable]> data[i,:p1] && data[i,variable]<= data[i,:p2]
+         data[i,name] = 2
+      elseif data[i,variable] > data[i,:p2]
+         data[i,name] = 3
       end
     end
     rename!(data,:p1 => Symbol("$(variable)_p1"),:p2 => Symbol("$(variable)_p2"))
   elseif length(pctls) == 3
      temp = by(data, by_variable) do df
-        (p1 = quantile(df[variable],pctls[1]),p2 = quantile(df[variable],pctls[2]), p3 = quantile(df[variable],pctls[3]))
+        (p1 = quantile(df[!,variable],pctls[1]),p2 = quantile(df[!,variable],pctls[2]), p3 = quantile(df[!,variable],pctls[3]))
      end
      data = join(data,temp,on = by_variable)
      name = Symbol("bin_$variable")
-     data[name] = 0
-     for i ∈ eachindex(data.variable)
-       if data.variable[i] <= data.p1[i]
-          data[name][i] = 1
-       elseif data.variable[i]> data.p1[i] && data.variable[i]<= data.p2[i]
-          data[name][i] = 2
-       elseif data.variable[i]> data.p2[i] && data.variable[i]<= data.p3[i]
-          data[name][i] = 3
-       elseif data.variable[i] > data.p3[i]
-          data[name][i] = 4
+     data[!,name].= 0
+     for i ∈ eachindex(data[!,variable])
+       if data[i,variable] <= data[i,:p1]
+          data[i,name] = 1
+       elseif data[i,variable]> data[i,:p1] && data[i,variable]<= data[i,:p2]
+          data[i,name] = 2
+       elseif data[i,variable]> data[i,:p2] && data[i,variable]<= data[i,:p3]
+          data[i,name] = 3
+       elseif data[i,variable] > data[i,:p3]
+          data[i,name] = 4
        end
      end
      rename!(data,:p1 => Symbol("$(variable)_p1"),:p2 => Symbol("$(variable)_p2"),:p3 => Symbol("$(variable)_p3"))
   elseif length(pctls) == 4
     temp = by(data, by_variable) do df
-       (p1 = quantile(df[variable],pctls[1]),p2 = quantile(df[variable],pctls[2]), p3 = quantile(df[variable],pctls[3]), p4 = quantile(df[variable],pctls[4]))
+       (p1 = quantile(df[!,variable],pctls[1]),p2 = quantile(df[!,variable],pctls[2]), p3 = quantile(df[!,variable],pctls[3]), p4 = quantile(df[!,variable],pctls[4]))
     end
     data = join(data,temp,on = by_variable)
     name = Symbol("bin_$variable")
-    data[name] = 0
-    for i ∈ eachindex(data.variable)
-      if data.variable[i] <= data.p1[i]
-         data[name][i] = 1
-      elseif data.variable[i]> data.p1[i] && data.variable[i]<= data.p2[i]
-         data[name][i] = 2
-      elseif data.variable[i]> data.p2[i] && data.variable[i]<= data.p3[i]
-         data[name][i] = 3
-      elseif data.variable[i] > data.p3[i]  && data.variable[i]<= data.p4[i]
-         data[name][i] = 4
-      elseif data.variable[i] > data.p4[i]
-        data[name][i] = 5
+    data[!,name].= 0
+    for i ∈ eachindex(data[!,variable])
+      if data[i,variable] <= data[i,:p1]
+         data[i,name] = 1
+      elseif data[i,variable]> data[i,:p1] && data[i,variable]<= data[i,:p2]
+         data[i,name] = 2
+      elseif data[i,variable]> data[i,:p2] && data[i,variable]<= data[i,:p3]
+         data[i,name] = 3
+      elseif data[i,variable] > data[i,:p3]  && data[i,variable]<= data[i,:p4]
+         data[i,name] = 4
+      elseif data[i,variable] > data[i,:p4]
+        data[i,name] = 5
       end
     end
     rename!(data,:p1 => Symbol("$(variable)_p1"),:p2 => Symbol("$(variable)_p2"),:p3 => Symbol("$(variable)_p3"),:p4 => Symbol("$(variable)_p4"))
   elseif length(pctls) == 9
     temp = by(data, by_variable) do df
-       (p1 = quantile(df[variable],pctls[1]),p2 = quantile(df[variable],pctls[2]), p3 = quantile(df[variable],pctls[3]), p4 = quantile(df[variable],pctls[4]), p5 = quantile(df[variable],pctls[5]),
-       p6 = quantile(df[variable],pctls[6]),p7 = quantile(df[variable],pctls[7]), p8 = quantile(df[variable],pctls[8]), p9 = quantile(df[variable],pctls[9]))
+       (p1 = quantile(df[!,variable],pctls[1]),p2 = quantile(df[!,variable],pctls[2]), p3 = quantile(df[!,variable],pctls[3]), p4 = quantile(df[!,variable],pctls[4]), p5 = quantile(df[!,variable],pctls[5]),
+       p6 = quantile(df[!,variable],pctls[6]),p7 = quantile(df[!,variable],pctls[7]), p8 = quantile(df[!,variable],pctls[8]), p9 = quantile(df[!,variable],pctls[9]))
     end
     data = join(data,temp,on = by_variable)
     name = Symbol("bin_$variable")
-    data[name] = 0
-    for i ∈ eachindex(data.variable)
-      if data.variable[i] <= data.p1[i]
-        data[name][i] = 1
-      elseif data.variable[i]> data.p1[i] && data.variable[i]<= data.p2[i]
-        data[name][i] = 2
-      elseif data.variable[i]> data.p2[i] && data.variable[i]<= data.p3[i]
-        data[name][i] = 3
-      elseif data.variable[i] > data.p3[i]  && data.variable[i]<= data.p4[i]
-        data[name][i] = 4
-      elseif data.variable[i] > data.p4[i]  && data.variable[i]<= data.p5[i]
-        data[name][i] = 5
-      elseif data.variable[i] > data.p5[i]  && data.variable[i]<= data.p6[i]
-        data[name][i] = 6
-      elseif data.variable[i] > data.p6[i]  && data.variable[i]<= data.p7[i]
-        data[name][i] = 7
-      elseif data.variable[i] > data.p7[i]  && data.variable[i]<= data.p8[i]
-        data[name][i] = 8
-      elseif data.variable[i] > data.p8[i]  && data.variable[i]<= data.p9[i]
-        data[name][i] = 9
-      elseif data.variable[i] > data.p9[i]
-        data[name][i] = 10
+    data[!,name].= 0
+    for i ∈ eachindex(data[!,variable])
+      if data[i,variable] <= data[i,:p1]
+        data[i,name] = 1
+      elseif data[i,variable]> data[i,:p1] && data[i,variable]<= data[i,:p2]
+        data[i,name] = 2
+      elseif data[i,variable]> data[i,:p2] && data[i,variable]<= data[i,:p3]
+        data[i,name] = 3
+      elseif data[i,variable] > data[i,:p3]  && data[i,variable]<= data[i,:p4]
+        data[i,name] = 4
+      elseif data[i,variable] > data[i,:p4]  && data[i,variable]<= data[i,:p5]
+        data[i,name] = 5
+      elseif data[i,variable] > data[i,:p5]  && data[i,variable]<= data[i,:p6]
+        data[i,name] = 6
+      elseif data[i,variable] > data[i,:p6]  && data[i,variable]<= data[i,:p7]
+        data[i,name] = 7
+      elseif data[i,variable] > data[i,:p7]  && data[i,variable]<= data[i,:p8]
+        data[i,name] = 8
+      elseif data[i,variable] > data[i,:p8]  && data[i,variable]<= data[i,:p9]
+        data[i,name] = 9
+      elseif data[i,variable] > data[i,:p9]
+        data[i,name] = 10
       end
     end
     rename!(data,:p1 => Symbol("$(variable)_p1"),:p2 => Symbol("$(variable)_p2"),:p3 => Symbol("$(variable)_p3"),:p4 => Symbol("$(variable)_p4"),:p5 => Symbol("$(variable)_p5"),
