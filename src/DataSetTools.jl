@@ -50,7 +50,7 @@ function reshape_results!(mc,D)
   temp = zeros(D.N*D.J)
   Data = DataFrame(temp = temp)
   for i in fieldnames(typeof(mc))
-   Data[i] = vec(getfield(mc,i))
+   Data[!,i] = vec(getfield(mc,i))
   end
   deletecols!(Data,:temp)
   return Data
