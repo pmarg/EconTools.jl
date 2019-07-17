@@ -90,7 +90,7 @@ data[:bin_income] # with values 1, 2, 3
 function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
   if length(pctls) == 2
     temp = by(data, by_variable) do df
-       (p1 = quantile(df[!,variable],pctls[1]),p2 = quantile(df[!,variable],pctls[2]))
+       (pctl1 = quantile(df[!,variable],pctls[1]),pctl2 = quantile(df[!,variable],pctls[2]))
     end
     data = join(data,temp,on = by_variable)
     name = Symbol("bin_$variable")
@@ -104,10 +104,10 @@ function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
          data[i,name] = 3
       end
     end
-    rename!(data,:p1 => Symbol("$(variable)_p1"),:p2 => Symbol("$(variable)_p2"))
+    rename!(data,:pctl1 => Symbol("$(variable)_p1"),:pctl2 => Symbol("$(variable)_p2"))
   elseif length(pctls) == 3
      temp = by(data, by_variable) do df
-        (p1 = quantile(df[!,variable],pctls[1]),p2 = quantile(df[!,variable],pctls[2]), p3 = quantile(df[!,variable],pctls[3]))
+        (pctl1 = quantile(df[!,variable],pctls[1]),pctl2 = quantile(df[!,variable],pctls[2]), pctl3 = quantile(df[!,variable],pctls[3]))
      end
      data = join(data,temp,on = by_variable)
      name = Symbol("bin_$variable")
@@ -123,10 +123,10 @@ function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
           data[i,name] = 4
        end
      end
-     rename!(data,:p1 => Symbol("$(variable)_p1"),:p2 => Symbol("$(variable)_p2"),:p3 => Symbol("$(variable)_p3"))
+     rename!(data,:pctl1 => Symbol("$(variable)_p1"),:pctl2 => Symbol("$(variable)_p2"),:pctl3 => Symbol("$(variable)_p3"))
   elseif length(pctls) == 4
     temp = by(data, by_variable) do df
-       (p1 = quantile(df[!,variable],pctls[1]),p2 = quantile(df[!,variable],pctls[2]), p3 = quantile(df[!,variable],pctls[3]), p4 = quantile(df[!,variable],pctls[4]))
+       (pctl1 = quantile(df[!,variable],pctls[1]),pctl2 = quantile(df[!,variable],pctls[2]), pctl3 = quantile(df[!,variable],pctls[3]), pctl4 = quantile(df[!,variable],pctls[4]))
     end
     data = join(data,temp,on = by_variable)
     name = Symbol("bin_$variable")
@@ -144,11 +144,11 @@ function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
         data[i,name] = 5
       end
     end
-    rename!(data,:p1 => Symbol("$(variable)_p1"),:p2 => Symbol("$(variable)_p2"),:p3 => Symbol("$(variable)_p3"),:p4 => Symbol("$(variable)_p4"))
+    rename!(data,:pctl1 => Symbol("$(variable)_p1"),:pctl2 => Symbol("$(variable)_p2"),:pctl3 => Symbol("$(variable)_p3"),:pctl4 => Symbol("$(variable)_p4"))
   elseif length(pctls) == 9
     temp = by(data, by_variable) do df
-       (p1 = quantile(df[!,variable],pctls[1]),p2 = quantile(df[!,variable],pctls[2]), p3 = quantile(df[!,variable],pctls[3]), p4 = quantile(df[!,variable],pctls[4]), p5 = quantile(df[!,variable],pctls[5]),
-       p6 = quantile(df[!,variable],pctls[6]),p7 = quantile(df[!,variable],pctls[7]), p8 = quantile(df[!,variable],pctls[8]), p9 = quantile(df[!,variable],pctls[9]))
+       (pctl1 = quantile(df[!,variable],pctls[1]),pctl2 = quantile(df[!,variable],pctls[2]), pctl3 = quantile(df[!,variable],pctls[3]), pctl4 = quantile(df[!,variable],pctls[4]), pctl5 = quantile(df[!,variable],pctls[5]),
+       pctl6 = quantile(df[!,variable],pctls[6]),pctl7 = quantile(df[!,variable],pctls[7]), pctl8 = quantile(df[!,variable],pctls[8]), pctl9 = quantile(df[!,variable],pctls[9]))
     end
     data = join(data,temp,on = by_variable)
     name = Symbol("bin_$variable")
@@ -176,8 +176,8 @@ function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
         data[i,name] = 10
       end
     end
-    rename!(data,:p1 => Symbol("$(variable)_p1"),:p2 => Symbol("$(variable)_p2"),:p3 => Symbol("$(variable)_p3"),:p4 => Symbol("$(variable)_p4"),:p5 => Symbol("$(variable)_p5"),
-    :p6 => Symbol("$(variable)_p6"),:p7 => Symbol("$(variable)_p7"),:p8 => Symbol("$(variable)_p8"),:p9 => Symbol("$(variable)_p9"))
+    rename!(data,:pctl1 => Symbol("$(variable)_p1"),:pctl2 => Symbol("$(variable)_p2"),:pctl3 => Symbol("$(variable)_p3"),:pctl4 => Symbol("$(variable)_p4"),:pctl5 => Symbol("$(variable)_p5"),
+    :pctl6 => Symbol("$(variable)_p6"),:pctl7 => Symbol("$(variable)_p7"),:pctl8 => Symbol("$(variable)_p8"),:pctl9 => Symbol("$(variable)_p9"))
     else
     error("Function supports 2, 3, 4 and 9 number of percentiles")
   end
