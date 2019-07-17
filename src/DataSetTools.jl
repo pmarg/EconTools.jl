@@ -95,12 +95,12 @@ function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
     data = join(data,temp,on = by_variable)
     name = Symbol("bin_$variable")
     data[name] = 0
-    for i ∈ eachindex(data[variable])
-      if data[variable][i] <= data[:p1][i]
+    for i ∈ eachindex(data.variable)
+      if data.variable[i] <= data.p1[i]
          data[name][i] = 1
-      elseif data[variable][i]> data[:p1][i] && data[variable][i]<= data[:p2][i]
+      elseif data.variable[i]> data.p1[i] && data.variable[i]<= data.p2[i]
          data[name][i] = 2
-      elseif data[variable][i] > data[:p2][i]
+      elseif data.variable[i] > data.p2[i]
          data[name][i] = 3
       end
     end
@@ -112,14 +112,14 @@ function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
      data = join(data,temp,on = by_variable)
      name = Symbol("bin_$variable")
      data[name] = 0
-     for i ∈ eachindex(data[variable])
-       if data[variable][i] <= data[:p1][i]
+     for i ∈ eachindex(data.variable)
+       if data.variable[i] <= data.p1[i]
           data[name][i] = 1
-       elseif data[variable][i]> data[:p1][i] && data[variable][i]<= data[:p2][i]
+       elseif data.variable[i]> data.p1[i] && data.variable[i]<= data.p2[i]
           data[name][i] = 2
-       elseif data[variable][i]> data[:p2][i] && data[variable][i]<= data[:p3][i]
+       elseif data.variable[i]> data.p2[i] && data.variable[i]<= data.p3[i]
           data[name][i] = 3
-       elseif data[variable][i] > data[:p3][i]
+       elseif data.variable[i] > data.p3[i]
           data[name][i] = 4
        end
      end
@@ -131,16 +131,16 @@ function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
     data = join(data,temp,on = by_variable)
     name = Symbol("bin_$variable")
     data[name] = 0
-    for i ∈ eachindex(data[variable])
-      if data[variable][i] <= data[:p1][i]
+    for i ∈ eachindex(data.variable)
+      if data.variable[i] <= data.p1[i]
          data[name][i] = 1
-      elseif data[variable][i]> data[:p1][i] && data[variable][i]<= data[:p2][i]
+      elseif data.variable[i]> data.p1[i] && data.variable[i]<= data.p2[i]
          data[name][i] = 2
-      elseif data[variable][i]> data[:p2][i] && data[variable][i]<= data[:p3][i]
+      elseif data.variable[i]> data.p2[i] && data.variable[i]<= data.p3[i]
          data[name][i] = 3
-      elseif data[variable][i] > data[:p3][i]  && data[variable][i]<= data[:p4][i]
+      elseif data.variable[i] > data.p3[i]  && data.variable[i]<= data.p4[i]
          data[name][i] = 4
-      elseif data[variable][i] > data[:p4][i]
+      elseif data.variable[i] > data.p4[i]
         data[name][i] = 5
       end
     end
@@ -153,26 +153,26 @@ function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
     data = join(data,temp,on = by_variable)
     name = Symbol("bin_$variable")
     data[name] = 0
-    for i ∈ eachindex(data[variable])
-      if data[variable][i] <= data[:p1][i]
+    for i ∈ eachindex(data.variable)
+      if data.variable[i] <= data.p1[i]
         data[name][i] = 1
-      elseif data[variable][i]> data[:p1][i] && data[variable][i]<= data[:p2][i]
+      elseif data.variable[i]> data.p1[i] && data.variable[i]<= data.p2[i]
         data[name][i] = 2
-      elseif data[variable][i]> data[:p2][i] && data[variable][i]<= data[:p3][i]
+      elseif data.variable[i]> data.p2[i] && data.variable[i]<= data.p3[i]
         data[name][i] = 3
-      elseif data[variable][i] > data[:p3][i]  && data[variable][i]<= data[:p4][i]
+      elseif data.variable[i] > data.p3[i]  && data.variable[i]<= data.p4[i]
         data[name][i] = 4
-      elseif data[variable][i] > data[:p4][i]  && data[variable][i]<= data[:p5][i]
+      elseif data.variable[i] > data.p4[i]  && data.variable[i]<= data.p5[i]
         data[name][i] = 5
-      elseif data[variable][i] > data[:p5][i]  && data[variable][i]<= data[:p6][i]
+      elseif data.variable[i] > data.p5[i]  && data.variable[i]<= data.p6[i]
         data[name][i] = 6
-      elseif data[variable][i] > data[:p6][i]  && data[variable][i]<= data[:p7][i]
+      elseif data.variable[i] > data.p6[i]  && data.variable[i]<= data.p7[i]
         data[name][i] = 7
-      elseif data[variable][i] > data[:p7][i]  && data[variable][i]<= data[:p8][i]
+      elseif data.variable[i] > data.p7[i]  && data.variable[i]<= data.p8[i]
         data[name][i] = 8
-      elseif data[variable][i] > data[:p8][i]  && data[variable][i]<= data[:p9][i]
+      elseif data.variable[i] > data.p8[i]  && data.variable[i]<= data.p9[i]
         data[name][i] = 9
-      elseif data[variable][i] > data[:p9][i]
+      elseif data.variable[i] > data.p9[i]
         data[name][i] = 10
       end
     end
