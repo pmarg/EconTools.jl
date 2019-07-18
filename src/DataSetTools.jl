@@ -96,11 +96,11 @@ function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
     name = Symbol("bin_$variable")
     data[!,name].= 0
     for i ∈ eachindex(data[!,variable])
-      if data[i,variable] <= data[i,:p1]
+      if data[i,variable] <= data[i,:pctl1]
          data[i,name] = 1
-      elseif data[i,variable]> data[i,:p1] && data[i,variable]<= data[i,:p2]
+      elseif data[i,variable]> data[i,:pctl1] && data[i,variable]<= data[i,:pctl2]
          data[i,name] = 2
-      elseif data[i,variable] > data[i,:p2]
+      elseif data[i,variable] > data[i,:pctl2]
          data[i,name] = 3
       end
     end
@@ -113,13 +113,13 @@ function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
      name = Symbol("bin_$variable")
      data[!,name].= 0
      for i ∈ eachindex(data[!,variable])
-       if data[i,variable] <= data[i,:p1]
+       if data[i,variable] <= data[i,:pctl1]
           data[i,name] = 1
-       elseif data[i,variable]> data[i,:p1] && data[i,variable]<= data[i,:p2]
+       elseif data[i,variable]> data[i,:pctl1] && data[i,variable]<= data[i,:pctl2]
           data[i,name] = 2
-       elseif data[i,variable]> data[i,:p2] && data[i,variable]<= data[i,:p3]
+       elseif data[i,variable]> data[i,:pctl2] && data[i,variable]<= data[i,:pctl3]
           data[i,name] = 3
-       elseif data[i,variable] > data[i,:p3]
+       elseif data[i,variable] > data[i,:pctl3]
           data[i,name] = 4
        end
      end
@@ -132,15 +132,15 @@ function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
     name = Symbol("bin_$variable")
     data[!,name].= 0
     for i ∈ eachindex(data[!,variable])
-      if data[i,variable] <= data[i,:p1]
+      if data[i,variable] <= data[i,:pctl1]
          data[i,name] = 1
-      elseif data[i,variable]> data[i,:p1] && data[i,variable]<= data[i,:p2]
+      elseif data[i,variable]> data[i,:pctl1] && data[i,variable]<= data[i,:pctl2]
          data[i,name] = 2
-      elseif data[i,variable]> data[i,:p2] && data[i,variable]<= data[i,:p3]
+      elseif data[i,variable]> data[i,:pctl2] && data[i,variable]<= data[i,:pctl3]
          data[i,name] = 3
-      elseif data[i,variable] > data[i,:p3]  && data[i,variable]<= data[i,:p4]
+      elseif data[i,variable] > data[i,:pctl3]  && data[i,variable]<= data[i,:pctl4]
          data[i,name] = 4
-      elseif data[i,variable] > data[i,:p4]
+      elseif data[i,variable] > data[i,:pctl4]
         data[i,name] = 5
       end
     end
@@ -154,25 +154,25 @@ function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
     name = Symbol("bin_$variable")
     data[!,name].= 0
     for i ∈ eachindex(data[!,variable])
-      if data[i,variable] <= data[i,:p1]
+      if data[i,variable] <= data[i,:pctl1]
         data[i,name] = 1
-      elseif data[i,variable]> data[i,:p1] && data[i,variable]<= data[i,:p2]
+      elseif data[i,variable]> data[i,:pctl1] && data[i,variable]<= data[i,:pctl2]
         data[i,name] = 2
-      elseif data[i,variable]> data[i,:p2] && data[i,variable]<= data[i,:p3]
+      elseif data[i,variable]> data[i,:pctl2] && data[i,variable]<= data[i,:pctl3]
         data[i,name] = 3
-      elseif data[i,variable] > data[i,:p3]  && data[i,variable]<= data[i,:p4]
+      elseif data[i,variable] > data[i,:pctl3]  && data[i,variable]<= data[i,:pctl4]
         data[i,name] = 4
-      elseif data[i,variable] > data[i,:p4]  && data[i,variable]<= data[i,:p5]
+      elseif data[i,variable] > data[i,:pctl4]  && data[i,variable]<= data[i,:pctl5]
         data[i,name] = 5
-      elseif data[i,variable] > data[i,:p5]  && data[i,variable]<= data[i,:p6]
+      elseif data[i,variable] > data[i,:pctl5]  && data[i,variable]<= data[i,:pctl6]
         data[i,name] = 6
-      elseif data[i,variable] > data[i,:p6]  && data[i,variable]<= data[i,:p7]
+      elseif data[i,variable] > data[i,:pctl6]  && data[i,variable]<= data[i,:pctl7]
         data[i,name] = 7
-      elseif data[i,variable] > data[i,:p7]  && data[i,variable]<= data[i,:p8]
+      elseif data[i,variable] > data[i,:pctl7]  && data[i,variable]<= data[i,:pctl8]
         data[i,name] = 8
-      elseif data[i,variable] > data[i,:p8]  && data[i,variable]<= data[i,:p9]
+      elseif data[i,variable] > data[i,:pctl8]  && data[i,variable]<= data[i,:pctl9]
         data[i,name] = 9
-      elseif data[i,variable] > data[i,:p9]
+      elseif data[i,variable] > data[i,:pctl9]
         data[i,name] = 10
       end
     end
