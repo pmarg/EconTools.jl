@@ -52,7 +52,7 @@ function reshape_results!(mc,D)
   for i in fieldnames(typeof(mc))
    Data[!,i] = vec(getfield(mc,i))
   end
-  deletecols!(Data,:temp)
+  select!(Data,Not(:temp))
   return Data
 end
 
