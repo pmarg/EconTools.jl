@@ -34,15 +34,8 @@ function summarise(table,var::Symbol,by::Tuple,weight::Symbol)
 end
 =#
 
-function keep!(df::DataFrame,col::Array{Symbol})
-  df = df[:,col]
-end
 
-function tabulate(table)
-  y = freqtable(table)
-  z = prop(y)
-  y = hcat(y,z)
-end
+
 
 function reshape_results!(mc,D)
   N = D.N
