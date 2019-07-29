@@ -32,9 +32,9 @@ function prettytime(t::Int)
         if t / 1e9 < 60
           value, units = t / 1e9, "s"
         elseif t / 1e9 < 3600
-          value, units = t / (1e9*60), "min"
+          value, units = t / (1e9*60), "m"
         else
-          value, units = t / (1e9*60*60), "hrs"
+          value, units = t / (1e9*60*60), "h"
         end
     end
 
