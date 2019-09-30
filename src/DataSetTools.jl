@@ -11,8 +11,9 @@ function reshape_results!(mc,D)
 end
 
 function print_struct(S)
+  s = maximum(length.(string.(fieldnames(typeof(S)))))
   for i in fieldnames(typeof(S))
-    @info "$i = $(getfield(S,i))"
+  @info "$(rpad(i,s," ")) = $(round.(getfield(S,i),digits=2))"
   end
 end
 
