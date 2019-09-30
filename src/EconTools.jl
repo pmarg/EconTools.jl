@@ -7,12 +7,12 @@ import TimerOutputs:prettytime
 
 
 
-
+include("logging.jl")
 include("QuantTools.jl")
 include("Utilities.jl")
 include("Grids.jl")
 include("DataSetTools.jl")
-include("logging.jl")
+
 
 export expspace, tauchen, indices, simulate_markov_shocks, stata_coordinates, interpolate_params
 export reshape_results!, print_struct, print_parameters, percentiles!

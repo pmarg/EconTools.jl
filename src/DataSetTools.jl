@@ -13,14 +13,14 @@ end
 function print_struct(S)
   s = maximum(length.(string.(fieldnames(typeof(S)))))
   for i in fieldnames(typeof(S))
-  @info "$(rpad(i,s," ")) = $(round.(getfield(S,i),digits=2))"
+  @calibration "$(rpad(i,s," ")) = $(round.(getfield(S,i),digits=2))"
   end
 end
 
 function print_parameters(P)
   for i ∈ fieldnames(typeof(P))
     println("--------------------")
-    @info typeof(getfield(P,i))
+    @calibration typeof(getfield(P,i))
     println("--------------------")
     print_struct(getfield(P,i))
   end
