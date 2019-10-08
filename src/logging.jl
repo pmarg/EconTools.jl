@@ -11,8 +11,7 @@ const Calibration = LogLevel(500)
 macro calibration(exs...) Base.CoreLogging.logmsg_code((Base.CoreLogging.@_sourceinfo)..., :Calibration, exs...) end
 const Simulation = LogLevel(501)
 macro simulation(exs...) Base.CoreLogging.logmsg_code((Base.CoreLogging.@_sourceinfo)..., :Simulation, exs...) end
-const loglvl = LogLevel
-function Base.show(io::IO, level::loglvl)
+function Base.show(io::IO, level::LogLevel)
     if     level == Logging.BelowMinLevel  print(io, "BelowMinLevel")
     elseif level == Logging.Debug          print(io, "Debug")
     elseif level == Logging.Info           print(io, "Info")
