@@ -221,7 +221,7 @@ function at_percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
       end
     end
     rename!(data,:pctl1 => Symbol("$(variable)_at_p1"),:pctl2 => Symbol("$(variable)_at_p2"),:pctl3 => Symbol("$(variable)_at_p3"),:pctl4 => Symbol("$(variable)_at_p4"),:pctl5 => Symbol("$(variable)_at_p5")),
-    :pctl6 => Symbol("$(variable)_at_p6")),:pctl7 => Symbol("$(variable)_at_p7")),:pctl8 => Symbol("$(variable)_at_p8")),:pctl9 => Symbol("$(variable)_at_p9")))
+    :pctl6 => Symbol("$(variable)_at_p6")),:pctl7 => Symbol("$(variable)_at_p7")),:pctl8 => Symbol("$(variable)_at_p8")),:pctl9 => Symbol("$(variable)_at_p9"))
     else
     error("Function supports 2, 3, 4 and 9 number of percentiles")
   end
