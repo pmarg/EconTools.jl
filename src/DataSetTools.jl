@@ -320,84 +320,75 @@ function at_percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
   return data
 end
 
-function at_percentiles!(data,variable;pctls = [0.05, 0.5, 0.95])
+function at_percentiles!(data, variable, N; pctls = [0.05, 0.5, 0.95])
   if length(pctls) == 2
-    for i ∈ 1: length(pctls)
-        data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
-    end
+    data = sort(data,variable)
+    pctls = round.(Int,pctls.*N)
     name = Symbol("bin_at_$variable")
     data[!,Symbol("bin_at_$variable")].= 0
     for i ∈ eachindex(data[!,variable])
-      if data[i,variable] ≈ data[i,:pctl1]
+      if data[i,variable] ≈ data.[pctls[1],variable]
          data[i,name] = 1
-      elseif data[i,variable]≈ data[i,:pctl2]
+      elseif data[i,variable]≈ data.[pctls[2],variable]
          data[i,name] = 2
       end
     end
-    rename!(data,:pctl1 => Symbol("$(variable)_at_p1"),:pctl2 => Symbol("$(variable)_at_p2"))
   elseif length(pctls) == 3
-    for i ∈ 1: length(pctls)
-      data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
-    end
+    data = sort(data,variable)
+    pctls = round.(Int,pctls.*N)
     name = Symbol("bin_at_$variable")
     data[!,Symbol("bin_at_$variable")].= 0
      for i ∈ eachindex(data[!,variable])
-       if data[i,variable] ≈ data[i,:pctl1]
+       if data[i,variable] ≈ data.[pctls[1],variable]
           data[i,name] = 1
-       elseif  data[i,variable] ≈ data[i,:pctl2]
+       elseif  data[i,variable] ≈ data.[pctls[2],variable]
           data[i,name] = 2
-       elseif data[i,variable]≈ data[i,:pctl3]
+       elseif data[i,variable]≈ data.[pctls[3],variable]
           data[i,name] = 3
        end
      end
-     rename!(data,:pctl1 => Symbol("$(variable)_at_p1"),:pctl2 => Symbol("$(variable)_at_p2"),:pctl3 => Symbol("$(variable)_at_p3"))
   elseif length(pctls) == 4
-      for i ∈ 1: length(pctls)
-          data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
-      end
-      name = Symbol("bin_at_$variable")
-      data[!,Symbol("bin_at_$variable")].= 0
+    data = sort(data,variable)
+    pctls = round.(Int,pctls.*N)
+    name = Symbol("bin_at_$variable")
+    data[!,Symbol("bin_at_$variable")].= 0
     for i ∈ eachindex(data[!,variable])
-      if data[i,variable] ≈ data[i,:pctl1]
+      if data[i,variable] ≈ data.[pctls[1],variable]
          data[i,name] = 1
-      elseif data[i,variable] ≈ data[i,:pctl2]
+      elseif data[i,variable] ≈ data.[pctls[2],variable]
          data[i,name] = 2
-      elseif data[i,variable]≈ data[i,:pctl3]
+      elseif data[i,variable]≈ data.[pctls[3],variable]
          data[i,name] = 3
-      elseif data[i,variable] ≈ data[i,:pctl4]
+      elseif data[i,variable] ≈ data.[pctls[4],variable]
          data[i,name] = 4
       end
     end
-    rename!(data,:pctl1 => Symbol("$(variable)_at_p1"),:pctl2 => Symbol("$(variable)_at_p2"),:pctl3 => Symbol("$(variable)_at_p3"),:pctl4 => Symbol("$(variable)_at_p4"))
   elseif length(pctls) == 9
-      for i ∈ 1: length(pctls)
-          data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
-      end
-      name = Symbol("bin_at_$variable")
-      data[!,Symbol("bin_at_$variable")].= 0
+    data = sort(data,variable)
+    pctls = round.(Int,pctls.*N)
+    name = Symbol("bin_at_$variable")
+    data[!,Symbol("bin_at_$variable")].= 0
     for i ∈ eachindex(data[!,variable])
-      if data[i,variable] ≈ data[i,:pctl1]
+      if data[i,variable] ≈ data.[pctls[1],variable]
         data[i,name] = 1
-      elseif data[i,variable] ≈ data[i,:pctl2]
+      elseif data[i,variable] ≈ data.[pctls[1],variable]
         data[i,name] = 2
-      elseif data[i,variable] ≈ data[i,:pctl3]
+      elseif data[i,variable] ≈ data.[pctls[1],variable]
         data[i,name] = 3
-      elseif data[i,variable] ≈ data[i,:pctl4]
+      elseif data[i,variable] ≈ data.[pctls[1],variable]
         data[i,name] = 4
-      elseif data[i,variable] ≈ data[i,:pctl5]
+      elseif data[i,variable] ≈ data.[pctls[1],variable]
         data[i,name] = 5
-      elseif data[i,variable] ≈ data[i,:pctl6]
+      elseif data[i,variable] ≈ data.[pctls[1],variable]
         data[i,name] = 6
-      elseif data[i,variable] ≈ data[i,:pctl7]
+      elseif data[i,variable] ≈ data.[pctls[1],variable]
         data[i,name] = 7
-      elseif data[i,variable] ≈ data[i,:pctl8]
+      elseif data[i,variable] ≈ data.[pctls[1],variable]
         data[i,name] = 8
-      elseif data[i,variable] ≈ data[i,:pctl9]
+      elseif data[i,variable] ≈ data.[pctls[1],variable]
         data[i,name] = 9
       end
     end
-    rename!(data,:pctl1 => Symbol("$(variable)_at_p1"),:pctl2 => Symbol("$(variable)_at_p2"),:pctl3 => Symbol("$(variable)_at_p3"),:pctl4 => Symbol("$(variable)_at_p4"),:pctl5 => Symbol("$(variable)_at_p5"),
-    :pctl6 => Symbol("$(variable)_at_p6"),:pctl7 => Symbol("$(variable)_at_p7"),:pctl8 => Symbol("$(variable)_at_p8"),:pctl9 => Symbol("$(variable)_at_p9"))
     else
     error("Function supports 2, 3, 4 and 9 number of percentiles")
   end
