@@ -197,7 +197,7 @@ function percentiles!(data,variable;pctls = [0.05, 0.5, 0.95])
   elseif length(pctls) == 9
       for i ∈ 1: length(pctls)
           data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
-      endu[]
+      end
       name = Symbol("bin_at_$variable")
       data[!,Symbol("bin_at_$variable")].= 0
     for i ∈ eachindex(data[!,variable])
