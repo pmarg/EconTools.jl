@@ -144,8 +144,8 @@ function percentiles!(data,variable;pctls = [0.05, 0.5, 0.95])
       for i ∈ 1: length(pctls)
           data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
       end
-      name = Symbol("bin_at_$variable")
-      data[!,Symbol("bin_at_$variable")].= 0
+      name = Symbol("bin_$variable")
+      data[!,Symbol("bin_$variable")].= 0
     for i ∈ eachindex(data[!,variable])
       if data[i,variable] <= data[i,:pctl1]
          data[i,name] = 1
@@ -160,8 +160,8 @@ function percentiles!(data,variable;pctls = [0.05, 0.5, 0.95])
       for i ∈ 1: length(pctls)
           data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
       end
-      name = Symbol("bin_at_$variable")
-      data[!,Symbol("bin_at_$variable")].= 0
+      name = Symbol("bin_$variable")
+      data[!,Symbol("bin_$variable")].= 0
      for i ∈ eachindex(data[!,variable])
        if data[i,variable] <= data[i,:pctl1]
           data[i,name] = 1
@@ -178,8 +178,8 @@ function percentiles!(data,variable;pctls = [0.05, 0.5, 0.95])
       for i ∈ 1: length(pctls)
           data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
       end
-      name = Symbol("bin_at_$variable")
-      data[!,Symbol("bin_at_$variable")].= 0
+      name = Symbol("bin_$variable")
+      data[!,Symbol("bin_$variable")].= 0
     for i ∈ eachindex(data[!,variable])
       if data[i,variable] <= data[i,:pctl1]
          data[i,name] = 1
@@ -198,8 +198,8 @@ function percentiles!(data,variable;pctls = [0.05, 0.5, 0.95])
       for i ∈ 1: length(pctls)
           data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
       end
-      name = Symbol("bin_at_$variable")
-      data[!,Symbol("bin_at_$variable")].= 0
+      name = Symbol("bin_$variable")
+      data[!,Symbol("bin_$variable")].= 0
     for i ∈ eachindex(data[!,variable])
       if data[i,variable] <= data[i,:pctl1]
         data[i,name] = 1
