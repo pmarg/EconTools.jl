@@ -15,7 +15,7 @@ include("DataSetTools.jl")
 
 
 export expspace, tauchen, indices, simulate_markov_shocks, stata_coordinates, interpolate_params
-export reshape_results!, print_struct, print_parameters, percentiles!
+export reshape_results!, print_struct, print_parameters, percentiles!, at_percentiles!
 export to, prettytime, @timeit, print_timer
 export @calibration, @simulation, show
 end # module
