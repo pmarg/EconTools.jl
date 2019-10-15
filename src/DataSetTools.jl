@@ -142,9 +142,8 @@ end
 function percentiles!(data,variable;pctls = [0.05, 0.5, 0.95])
   if length(pctls) == 2
       for i ∈ 1: length(pctls)
-          data[!,Symbol("pctl$i")] .= quantile(data_b[!,variable],pctls[i])
+          data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
       end
-      data = join(data,temp,on = by_variable)
       data[!,Symbol("bin_at_$variable")].= 0
     for i ∈ eachindex(data[!,variable])
       if data[i,variable] <= data[i,:pctl1]
@@ -158,9 +157,8 @@ function percentiles!(data,variable;pctls = [0.05, 0.5, 0.95])
     rename!(data,:pctl1 => Symbol("$(variable)_p1"),:pctl2 => Symbol("$(variable)_p2"))
   elseif length(pctls) == 3
       for i ∈ 1: length(pctls)
-          data[!,Symbol("pctl$i")] .= quantile(data_b[!,variable],pctls[i])
+          data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
       end
-      data = join(data,temp,on = by_variable)
       data[!,Symbol("bin_at_$variable")].= 0
      for i ∈ eachindex(data[!,variable])
        if data[i,variable] <= data[i,:pctl1]
@@ -176,9 +174,8 @@ function percentiles!(data,variable;pctls = [0.05, 0.5, 0.95])
      rename!(data,:pctl1 => Symbol("$(variable)_p1"),:pctl2 => Symbol("$(variable)_p2"),:pctl3 => Symbol("$(variable)_p3"))
   elseif length(pctls) == 4
       for i ∈ 1: length(pctls)
-          data[!,Symbol("pctl$i")] .= quantile(data_b[!,variable],pctls[i])
+          data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
       end
-      data = join(data,temp,on = by_variable)
       data[!,Symbol("bin_at_$variable")].= 0
     for i ∈ eachindex(data[!,variable])
       if data[i,variable] <= data[i,:pctl1]
@@ -196,9 +193,8 @@ function percentiles!(data,variable;pctls = [0.05, 0.5, 0.95])
     rename!(data,:pctl1 => Symbol("$(variable)_p1"),:pctl2 => Symbol("$(variable)_p2"),:pctl3 => Symbol("$(variable)_p3"),:pctl4 => Symbol("$(variable)_p4"))
   elseif length(pctls) == 9
       for i ∈ 1: length(pctls)
-          data[!,Symbol("pctl$i")] .= quantile(data_b[!,variable],pctls[i])
+          data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
       end
-      data = join(data,temp,on = by_variable)
       data[!,Symbol("bin_at_$variable")].= 0
     for i ∈ eachindex(data[!,variable])
       if data[i,variable] <= data[i,:pctl1]
@@ -323,9 +319,8 @@ end
 function at_percentiles!(data,variable;pctls = [0.05, 0.5, 0.95])
   if length(pctls) == 2
     for i ∈ 1: length(pctls)
-        data[!,Symbol("pctl$i")] .= quantile(data_b[!,variable],pctls[i])
+        data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
     end
-    data = join(data,temp,on = by_variable)
     data[!,Symbol("bin_at_$variable")].= 0
     for i ∈ eachindex(data[!,variable])
       if data[i,variable] ≈ data[i,:pctl1]
@@ -337,9 +332,8 @@ function at_percentiles!(data,variable;pctls = [0.05, 0.5, 0.95])
     rename!(data,:pctl1 => Symbol("$(variable)_at_p1"),:pctl2 => Symbol("$(variable)_at_p2"))
   elseif length(pctls) == 3
     for i ∈ 1: length(pctls)
-      data[!,Symbol("pctl$i")] .= quantile(data_b[!,variable],pctls[i])
+      data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
     end
-    data = join(data,temp,on = by_variable)
     data[!,Symbol("bin_at_$variable")].= 0
      for i ∈ eachindex(data[!,variable])
        if data[i,variable] ≈ data[i,:pctl1]
@@ -353,9 +347,8 @@ function at_percentiles!(data,variable;pctls = [0.05, 0.5, 0.95])
      rename!(data,:pctl1 => Symbol("$(variable)_at_p1"),:pctl2 => Symbol("$(variable)_at_p2"),:pctl3 => Symbol("$(variable)_at_p3"))
   elseif length(pctls) == 4
       for i ∈ 1: length(pctls)
-          data[!,Symbol("pctl$i")] .= quantile(data_b[!,variable],pctls[i])
+          data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
       end
-      data = join(data,temp,on = by_variable)
       data[!,Symbol("bin_at_$variable")].= 0
     for i ∈ eachindex(data[!,variable])
       if data[i,variable] ≈ data[i,:pctl1]
@@ -371,9 +364,8 @@ function at_percentiles!(data,variable;pctls = [0.05, 0.5, 0.95])
     rename!(data,:pctl1 => Symbol("$(variable)_at_p1"),:pctl2 => Symbol("$(variable)_at_p2"),:pctl3 => Symbol("$(variable)_at_p3"),:pctl4 => Symbol("$(variable)_at_p4"))
   elseif length(pctls) == 9
       for i ∈ 1: length(pctls)
-          data[!,Symbol("pctl$i")] .= quantile(data_b[!,variable],pctls[i])
+          data[!,Symbol("pctl$i")] .= quantile(data[!,variable],pctls[i])
       end
-      data = join(data,temp,on = by_variable)
       data[!,Symbol("bin_at_$variable")].= 0
     for i ∈ eachindex(data[!,variable])
       if data[i,variable] ≈ data[i,:pctl1]
