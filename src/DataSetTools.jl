@@ -327,9 +327,9 @@ function at_percentiles!(data, variable, N; pctls = [0.05, 0.5, 0.95])
     name = Symbol("bin_at_$variable")
     data[!,Symbol("bin_at_$variable")].= 0
     for i ∈ eachindex(data[!,variable])
-      if data[i,variable] ≈ data.[pctls[1],variable]
+      if data[i,variable] ≈ data[pctls[1],variable]
          data[i,name] = 1
-      elseif data[i,variable]≈ data.[pctls[2],variable]
+      elseif data[i,variable]≈ data[pctls[2],variable]
          data[i,name] = 2
       end
     end
@@ -339,11 +339,11 @@ function at_percentiles!(data, variable, N; pctls = [0.05, 0.5, 0.95])
     name = Symbol("bin_at_$variable")
     data[!,Symbol("bin_at_$variable")].= 0
      for i ∈ eachindex(data[!,variable])
-       if data[i,variable] ≈ data.[pctls[1],variable]
+       if data[i,variable] ≈ data[pctls[1],variable]
           data[i,name] = 1
-       elseif  data[i,variable] ≈ data.[pctls[2],variable]
+       elseif  data[i,variable] ≈ data[pctls[2],variable]
           data[i,name] = 2
-       elseif data[i,variable]≈ data.[pctls[3],variable]
+       elseif data[i,variable]≈ data[pctls[3],variable]
           data[i,name] = 3
        end
      end
@@ -353,13 +353,13 @@ function at_percentiles!(data, variable, N; pctls = [0.05, 0.5, 0.95])
     name = Symbol("bin_at_$variable")
     data[!,Symbol("bin_at_$variable")].= 0
     for i ∈ eachindex(data[!,variable])
-      if data[i,variable] ≈ data.[pctls[1],variable]
+      if data[i,variable] ≈ data[pctls[1],variable]
          data[i,name] = 1
-      elseif data[i,variable] ≈ data.[pctls[2],variable]
+      elseif data[i,variable] ≈ data[pctls[2],variable]
          data[i,name] = 2
-      elseif data[i,variable]≈ data.[pctls[3],variable]
+      elseif data[i,variable]≈ data[pctls[3],variable]
          data[i,name] = 3
-      elseif data[i,variable] ≈ data.[pctls[4],variable]
+      elseif data[i,variable] ≈ data[pctls[4],variable]
          data[i,name] = 4
       end
     end
@@ -369,23 +369,23 @@ function at_percentiles!(data, variable, N; pctls = [0.05, 0.5, 0.95])
     name = Symbol("bin_at_$variable")
     data[!,Symbol("bin_at_$variable")].= 0
     for i ∈ eachindex(data[!,variable])
-      if data[i,variable] ≈ data.[pctls[1],variable]
+      if data[i,variable] ≈ data[pctls[1],variable]
         data[i,name] = 1
-      elseif data[i,variable] ≈ data.[pctls[1],variable]
+      elseif data[i,variable] ≈ data[pctls[1],variable]
         data[i,name] = 2
-      elseif data[i,variable] ≈ data.[pctls[1],variable]
+      elseif data[i,variable] ≈ data[pctls[1],variable]
         data[i,name] = 3
-      elseif data[i,variable] ≈ data.[pctls[1],variable]
+      elseif data[i,variable] ≈ data[pctls[1],variable]
         data[i,name] = 4
-      elseif data[i,variable] ≈ data.[pctls[1],variable]
+      elseif data[i,variable] ≈ data[pctls[1],variable]
         data[i,name] = 5
-      elseif data[i,variable] ≈ data.[pctls[1],variable]
+      elseif data[i,variable] ≈ data[pctls[1],variable]
         data[i,name] = 6
-      elseif data[i,variable] ≈ data.[pctls[1],variable]
+      elseif data[i,variable] ≈ data[pctls[1],variable]
         data[i,name] = 7
-      elseif data[i,variable] ≈ data.[pctls[1],variable]
+      elseif data[i,variable] ≈ data[pctls[1],variable]
         data[i,name] = 8
-      elseif data[i,variable] ≈ data.[pctls[1],variable]
+      elseif data[i,variable] ≈ data[pctls[1],variable]
         data[i,name] = 9
       end
     end
