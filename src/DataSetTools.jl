@@ -148,9 +148,9 @@ function at_percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
     name = Symbol("bin_at_$variable")
     data[!,name].= 0
     for i ∈ eachindex(data[!,variable])
-      if data[i,variable] == data[i,:pctl1]
+      if data[i,variable] ≈ data[i,:pctl1]
          data[i,name] = 1
-      elseif data[i,variable]== data[i,:pctl2]
+      elseif data[i,variable]≈ data[i,:pctl2]
          data[i,name] = 2
       end
     end
@@ -163,11 +163,11 @@ function at_percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
      name = Symbol("bin_at_$variable")
      data[!,name].= 0
      for i ∈ eachindex(data[!,variable])
-       if data[i,variable] == data[i,:pctl1]
+       if data[i,variable] ≈ data[i,:pctl1]
           data[i,name] = 1
-       elseif  data[i,variable] == data[i,:pctl2]
+       elseif  data[i,variable] ≈ data[i,:pctl2]
           data[i,name] = 2
-       elseif data[i,variable]== data[i,:pctl3]
+       elseif data[i,variable]≈ data[i,:pctl3]
           data[i,name] = 3
        end
      end
@@ -180,13 +180,13 @@ function at_percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
     name = Symbol("bin_at_$variable")
     data[!,name].= 0
     for i ∈ eachindex(data[!,variable])
-      if data[i,variable] == data[i,:pctl1]
+      if data[i,variable] ≈ data[i,:pctl1]
          data[i,name] = 1
-      elseif data[i,variable] == data[i,:pctl2]
+      elseif data[i,variable] ≈ data[i,:pctl2]
          data[i,name] = 2
-      elseif data[i,variable]== data[i,:pctl3]
+      elseif data[i,variable]≈ data[i,:pctl3]
          data[i,name] = 3
-      elseif data[i,variable] == data[i,:pctl4]
+      elseif data[i,variable] ≈ data[i,:pctl4]
          data[i,name] = 4
       end
     end
@@ -200,23 +200,23 @@ function at_percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
     name = Symbol("bin_at_$variable")
     data[!,name].= 0
     for i ∈ eachindex(data[!,variable])
-      if data[i,variable] == data[i,:pctl1]
+      if data[i,variable] ≈ data[i,:pctl1]
         data[i,name] = 1
-      elseif data[i,variable] == data[i,:pctl2]
+      elseif data[i,variable] ≈ data[i,:pctl2]
         data[i,name] = 2
-      elseif data[i,variable] == data[i,:pctl3]
+      elseif data[i,variable] ≈ data[i,:pctl3]
         data[i,name] = 3
-      elseif data[i,variable] == data[i,:pctl4]
+      elseif data[i,variable] ≈ data[i,:pctl4]
         data[i,name] = 4
-      elseif data[i,variable] == data[i,:pctl5]
+      elseif data[i,variable] ≈ data[i,:pctl5]
         data[i,name] = 5
-      elseif data[i,variable] == data[i,:pctl6]
+      elseif data[i,variable] ≈ data[i,:pctl6]
         data[i,name] = 6
-      elseif data[i,variable] == data[i,:pctl7]
+      elseif data[i,variable] ≈ data[i,:pctl7]
         data[i,name] = 7
-      elseif data[i,variable] == data[i,:pctl8]
+      elseif data[i,variable] ≈ data[i,:pctl8]
         data[i,name] = 8
-      elseif data[i,variable] == data[i,:pctl9]
+      elseif data[i,variable] ≈ data[i,:pctl9]
         data[i,name] = 9
       end
     end
