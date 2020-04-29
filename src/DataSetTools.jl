@@ -1,3 +1,25 @@
+function pivot_longer(df::AbstractDataFrame,bycol::Symbol,cols::Vector{Symbol};period = :Period)
+  # temp = nothing
+   df_longer = nothing
+   m = nothing
+  @inbounds for col ∈ cols
+    temp = select(df,Regex(String(col)))
+    @inbounds for colname ∈ names(temp)
+      m = match(r"(?<Name>\w+)_(?<Value>\d+)",String(colname))
+      rename!(temp,colname=>Symbol(m[2]))
+    end
+    temp[!,bycol] = df[!,bycol]
+    temp = melt(temp,bycol)
+    rename!(temp,:variable => period, :value => Symbol(m[1]))
+    if df_longer == nothing
+      df_longer = temp
+    else
+      df_longer = join(df_longer, temp, on = [bycol,period], kind = :outer)
+    end
+  end
+  return df_longer
+end
+
 function reshape_results!(mc,D)
   N = D.N
   J = D.J
