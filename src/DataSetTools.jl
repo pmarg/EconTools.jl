@@ -420,7 +420,8 @@ end
 function tab(x)
   x = skipmissing(x)
   temp = DataFrame(Variable = collect(extrema(unique(x))[1]:extrema(unique(x))[2]), Proportion = proportions(x,extrema(unique(x))[1]:extrema(unique(x))[2]))
-  temp = @where(temp,:Proportion.!=0.0)
+  df[df.A .> 500, :]
+  temp = temp[temp.Proportion.!=0.0,:]
   return temp
 end
 
@@ -429,6 +430,6 @@ function tab(x,wt)
     dropmissing!(df)
     df.wt1 = weights(df.wt1)
   temp = DataFrame(Variable = collect(extrema(unique(df.x1))[1]:extrema(unique(df.x1))[2]), Proportion = proportions(df.x1,extrema(unique(df.x1))[1]:extrema(unique(df.x1))[2],df.wt1))
-  temp = @where(temp,:Proportion.!=0.0)
+  temp = temp[temp.Proportion.!=0.0,:]
   return temp
 end
