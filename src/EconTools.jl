@@ -1,7 +1,7 @@
 module EconTools
 
 using Statistics, Distributions, StatsFuns, Interpolations,  Statistics, StatsBase
-using PGFPlotsX,  DataFrames, TimerOutputs, Printf, Mmap, CodecZlib
+using PGFPlotsX,  DataFrames, TimerOutputs, Printf, Mmap, CodecZlib, CSV
 import TimerOutputs:prettytime
 #using JuliaDB
 
