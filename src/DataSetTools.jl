@@ -432,3 +432,13 @@ function tab(x,wt)
   temp = temp[temp.Proportion.!=0.0,:]
   return temp
 end
+
+function writeGzip(df,path)
+  open(GzipCompressorStream, path, "w") do stream
+      CSV.write(stream, df)
+  end
+end
+
+function readGzip(path;head = 1)
+  df = CSV.File(transcode(GzipDecompressor, Mmap.mmap(path)),header = head) |> DataFrame!
+end

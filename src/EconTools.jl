@@ -1,7 +1,7 @@
 module EconTools
 
 using Statistics, Distributions, StatsFuns, Interpolations,  Statistics, StatsBase
-using PGFPlotsX,  DataFrames, TimerOutputs, Printf
+using PGFPlotsX,  DataFrames, TimerOutputs, Printf, Mmap, CodecZlib
 import TimerOutputs:prettytime
 #using JuliaDB
 
@@ -18,4 +18,6 @@ export expspace, tauchen, indices, simulate_markov_shocks, stata_coordinates, in
 export reshape_results!, print_struct, print_parameters, percentiles!, at_percentiles!
 export to, prettytime, @timeit, print_timer
 export show, pivot_longer,tab
+export writeGzip, readGzip
+export pgfplot
 end # module
