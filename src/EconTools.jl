@@ -12,6 +12,7 @@ include("QuantTools.jl")
 include("Utilities.jl")
 include("Grids.jl")
 include("DataSetTools.jl")
+include("Plotting.jl")
 
 
 export expspace, tauchen, indices, simulate_markov_shocks, stata_coordinates, interpolate_params
