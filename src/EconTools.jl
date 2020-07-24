@@ -39,6 +39,5 @@ export AbstractParameter,
        set,
        ←,
        show
-end
 
 end # module
