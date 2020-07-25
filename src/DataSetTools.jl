@@ -1,3 +1,4 @@
+
 function pivot_longer(df::AbstractDataFrame,bycol::Symbol,cols::Vector{Symbol};period = :Period)
   # temp = nothing
    df_longer = nothing
@@ -9,12 +10,12 @@ function pivot_longer(df::AbstractDataFrame,bycol::Symbol,cols::Vector{Symbol};p
       rename!(temp,colname=>Symbol(m[2]))
     end
     temp[!,bycol] = df[!,bycol]
-    temp = melt(temp,bycol)
+    temp = stack(temp,Not(bycol),variable_eltype=String)
     rename!(temp,:variable => period, :value => Symbol(m[1]))
     if df_longer == nothing
       df_longer = temp
     else
-      df_longer = join(df_longer, temp, on = [bycol,period], kind = :outer)
+      df_longer = outerjoin(df_longer, temp, on = [bycol,period])
     end
   end
   return df_longer
@@ -342,80 +343,7 @@ function at_percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
   return data
 end
 
-# function at_percentiles!(data, variable, N; pctls = [0.05, 0.5, 0.95])
-#   if length(pctls) == 2
-#     data = sort(data,variable)
-#     pctls = round.(Int,pctls.*N)
-#     name = Symbol("bin_at_$variable")
-#     data[!,Symbol("bin_at_$variable")].= 0
-#     for i ∈ eachindex(data[!,variable])
-#       if data[i,variable] ≈ data[pctls[1],variable]
-#          data[i,name] = 1
-#       elseif data[i,variable]≈ data[pctls[2],variable]
-#          data[i,name] = 2
-#       end
-#     end
-#   elseif length(pctls) == 3
-#     data = sort(data,variable)
-#     pctls = round.(Int,pctls.*N)
-#     name = Symbol("bin_at_$variable")
-#     data[!,Symbol("bin_at_$variable")].= 0
-#      for i ∈ eachindex(data[!,variable])
-#        if data[i,variable] ≈ data[pctls[1],variable]
-#           data[i,name] = 1
-#        elseif  data[i,variable] ≈ data[pctls[2],variable]
-#           data[i,name] = 2
-#        elseif data[i,variable]≈ data[pctls[3],variable]
-#           data[i,name] = 3
-#        end
-#      end
-#   elseif length(pctls) == 4
-#     data = sort(data,variable)
-#     pctls = round.(Int,pctls.*N)
-#     name = Symbol("bin_at_$variable")
-#     data[!,Symbol("bin_at_$variable")].= 0
-#     for i ∈ eachindex(data[!,variable])
-#       if data[i,variable] ≈ data[pctls[1],variable]
-#          data[i,name] = 1
-#       elseif data[i,variable] ≈ data[pctls[2],variable]
-#          data[i,name] = 2
-#       elseif data[i,variable]≈ data[pctls[3],variable]
-#          data[i,name] = 3
-#       elseif data[i,variable] ≈ data[pctls[4],variable]
-#          data[i,name] = 4
-#       end
-#     end
-#   elseif length(pctls) == 9
-#     data = sort(data,variable)
-#     pctls = round.(Int,pctls.*N)
-#     name = Symbol("bin_at_$variable")
-#     data[!,Symbol("bin_at_$variable")].= 0
-#     for i ∈ eachindex(data[!,variable])
-#       if data[i,variable] ≈ data[pctls[1],variable]
-#         data[i,name] = 1
-#       elseif data[i,variable] ≈ data[pctls[2],variable]
-#         data[i,name] = 2
-#       elseif data[i,variable] ≈ data[pctls[3],variable]
-#         data[i,name] = 3
-#       elseif data[i,variable] ≈ data[pctls[4],variable]
-#         data[i,name] = 4
-#       elseif data[i,variable] ≈ data[pctls[5],variable]
-#         data[i,name] = 5
-#       elseif data[i,variable] ≈ data[pctls[6],variable]
-#         data[i,name] = 6
-#       elseif data[i,variable] ≈ data[pctls[7],variable]
-#         data[i,name] = 7
-#       elseif data[i,variable] ≈ data[pctls[8],variable]
-#         data[i,name] = 8
-#       elseif data[i,variable] ≈ data[pctls[9],variable]
-#         data[i,name] = 9
-#       end
-#     end
-#     else
-#     error("Function supports 2, 3, 4 and 9 number of percentiles")
-#   end
-#   return data
-# end
+
 
 function tab(x)
   x = collect(skipmissing(x))
