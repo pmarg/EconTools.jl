@@ -41,7 +41,6 @@ function pgfplot(y1,y2; leg = ("y1","y2"), lab =("x","y"),tlt = "Figure", path =
         else
             pgfsave(path, p, include_preamble = false)
         end
- 
 end
 
 function pgfplot(y1,y2,y3; leg = ("y1","y2","y3"), lab =("x","y"),tlt = "Figure")
