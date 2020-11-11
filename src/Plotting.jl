@@ -16,7 +16,7 @@ function pgfplot(y; leg = "y1", lab =("x","y"),tlt = "Figure")
     display("image/png",p)
 end
 
-function pgfplot(y1,y2; leg = ("y1","y2"), lab =("x","y"),tlt = "Figure")
+function pgfplot(y1,y2; leg = ("y1","y2"), lab =("x","y"),tlt = "Figure", path = "NA")
     x1 = 1:size(y1,1)
     x2 = 1:size(y2,1)
 
@@ -36,7 +36,12 @@ function pgfplot(y1,y2; leg = ("y1","y2"), lab =("x","y"),tlt = "Figure")
             Plot(Table([:x => x2, :y => y2])),
             LegendEntry(leg[2])
         )
-    display("image/png",p)
+        if path == "NA"
+            display("image/png",p)
+        else
+            pgfsave(path, p, include_preamble = false)
+        end
+ 
 end
 
 function pgfplot(y1,y2,y3; leg = ("y1","y2","y3"), lab =("x","y"),tlt = "Figure")
