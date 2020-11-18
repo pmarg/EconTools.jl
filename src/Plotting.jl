@@ -1,3 +1,24 @@
+pgfplots_pre = "\\definecolor{airforceblue}{rgb}{0.36, 0.54, 0.66}
+  \\definecolor{amaranth}{rgb}{0.9, 0.17, 0.31}
+\\definecolor{asparagus}{rgb}{0.53, 0.66, 0.42}
+\\definecolor{cadmiumorange}{rgb}{0.93, 0.53, 0.18}
+\\pgfplotscreateplotcyclelist{edu2}{%
+no marks,very thick,color = airforceblue\\\\%1
+no marks,very thick,color = cadmiumorange\\\\%2
+}
+\\pgfplotscreateplotcyclelist{edu3}{%
+no marks,very thick,color = airforceblue\\\\%1
+no marks,very thick,color = cadmiumorange\\\\%2
+no marks,very thick,color = asparagus\\\\%3
+}
+\\pgfplotscreateplotcyclelist{edu4}{%
+no marks,very thick,color = airforceblue\\\\%1
+no marks,very thick,color = cadmiumorange\\\\%2
+no marks,very thick,color = asparagus\\\\%3
+no marks,very thick,color = amaranth\\\\%4
+}"
+push!(PGFPlotsX.CUSTOM_PREAMBLE, pgfplots_pre)
+
 function pgfplot(y; leg = "y1", lab =("x","y"),tlt = "Figure")
     x = 1:size(y,1)
     p = @pgf Axis({
