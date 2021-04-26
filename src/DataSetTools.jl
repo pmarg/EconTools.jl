@@ -372,5 +372,5 @@ function writeGzip(df,path)
 end
 
 function readGzip(path;head = 1)
-  df = CSV.File(transcode(GzipDecompressor, Mmap.mmap(path)),header = head) |> DataFrame!
+  df = CSV.File(transcode(GzipDecompressor, Mmap.mmap(path)),header = head) |> DataFrame
 end
