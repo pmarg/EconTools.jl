@@ -25,7 +25,7 @@ export reshape_results!, print_struct, print_parameters, percentiles!, at_percen
 export to, prettytime, @timeit, print_timer
 export show, pivot_longer,tab
 export writeGzip, readGzip
-export pgfplot
+export pgfplot, initialize_pgfplots
 # Model Parameters
 export AbstractParameter,
        AbstractParameterSet,

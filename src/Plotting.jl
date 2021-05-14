@@ -1,32 +1,36 @@
-pgfplots_pre = "\\definecolor{airforceblue}{rgb}{0.36, 0.54, 0.66}
-  \\definecolor{amaranth}{rgb}{0.9, 0.17, 0.31}
-\\definecolor{asparagus}{rgb}{0.53, 0.66, 0.42}
-\\definecolor{cadmiumorange}{rgb}{0.93, 0.53, 0.18}
-\\pgfplotscreateplotcyclelist{edu2}{%
-no marks,very thick,color = airforceblue\\\\%1
-no marks,very thick,color = cadmiumorange\\\\%2
-}
-\\pgfplotscreateplotcyclelist{edu3}{%
-no marks,very thick,color = airforceblue\\\\%1
-no marks,very thick,color = cadmiumorange\\\\%2
-no marks,very thick,color = asparagus\\\\%3
-}
-\\pgfplotscreateplotcyclelist{edu4}{%
-no marks,very thick,color = airforceblue\\\\%1
-no marks,very thick,color = cadmiumorange\\\\%2
-no marks,very thick,color = asparagus\\\\%3
-no marks,very thick,color = amaranth\\\\%4
-}"
-push!(PGFPlotsX.CUSTOM_PREAMBLE, pgfplots_pre)
+function initialize_pgfplots()
 
-function pgfplot(y; leg = "y1", lab =("x","y"),tlt = "Figure")
+    pgfplots_pre = "\\definecolor{airforceblue}{rgb}{0.36, 0.54, 0.66}
+    \\definecolor{amaranth}{rgb}{0.9, 0.17, 0.31}
+    \\definecolor{asparagus}{rgb}{0.53, 0.66, 0.42}
+    \\definecolor{cadmiumorange}{rgb}{0.93, 0.53, 0.18}
+    \\pgfplotscreateplotcyclelist{edu2}{%
+    no marks,very thick,color = airforceblue\\\\%1
+    no marks,very thick,color = cadmiumorange\\\\%2
+    }
+    \\pgfplotscreateplotcyclelist{edu3}{%
+    no marks,very thick,color = airforceblue\\\\%1
+    no marks,very thick,color = cadmiumorange\\\\%2
+    no marks,very thick,color = asparagus\\\\%3
+    }
+    \\pgfplotscreateplotcyclelist{edu4}{%
+    no marks,very thick,color = airforceblue\\\\%1
+    no marks,very thick,color = cadmiumorange\\\\%2
+    no marks,very thick,color = asparagus\\\\%3
+    no marks,very thick,color = amaranth\\\\%4
+    }"
+    push!(PGFPlotsX.CUSTOM_PREAMBLE, pgfplots_pre)
+
+end
+
+function pgfplot(y; Legend = "y1", Label =("x","y"), Title = "Figure", Path = "NA", Width = "0.6*\\textwidth", Legend_pos = "outer north east", PDF = false )
     x = 1:size(y,1)
     p = @pgf Axis({
         xlabel = lab[1],
         ylabel = lab[2],
         title = tlt,
-        width="0.6*\\textwidth",
-        legend_pos="outer north east",
+        width = Width,
+        legend_pos = Legend_pos,
         cycle_list_name = "edu2",
         xmin = extrema(x)[1],
         xmax = extrema(x)[2],
@@ -34,10 +38,16 @@ function pgfplot(y; leg = "y1", lab =("x","y"),tlt = "Figure")
             PlotInc(Table([:x => x, :y => y])),
             LegendEntry(leg),
         )
-    display("image/png",p)
+        if path != "NA"
+            pgfsave(path*".tex", p, include_preamble = false)
+            if PDF
+                pgfsave(path*".pdf", p)
+            end  
+        end
+        display("image/png",p)
 end
 
-function pgfplot(y1,y2; leg = ("y1","y2"), lab =("x","y"),tlt = "Figure", path = "NA")
+function pgfplot(y1,y2; Legend = ("y1","y2"), Label =("x","y"),Title = "Figure", Path = "NA", Width = "0.6*\\textwidth", Legend_pos = "outer north east", PDF = false)
     x1 = 1:size(y1,1)
     x2 = 1:size(y2,1)
 
@@ -45,8 +55,8 @@ function pgfplot(y1,y2; leg = ("y1","y2"), lab =("x","y"),tlt = "Figure", path =
         xlabel = lab[1],
         ylabel = lab[2],
         title = tlt,
-        width="0.6*\\textwidth",
-        legend_pos="outer north east",
+        width = Width,
+        legend_pos = Legend_pos,
         cycle_list_name = "edu2",
         xmin = extrema(x1)[1],
         xmax = extrema(x1)[2],
@@ -57,14 +67,16 @@ function pgfplot(y1,y2; leg = ("y1","y2"), lab =("x","y"),tlt = "Figure", path =
             Plot(Table([:x => x2, :y => y2])),
             LegendEntry(leg[2])
         )
-        if path == "NA"
-            display("image/png",p)
-        else
-            pgfsave(path, p, include_preamble = false)
+        if path != "NA"
+            pgfsave(path*".tex", p, include_preamble = false)
+            if PDF
+                pgfsave(path*".pdf", p)
+            end  
         end
+        display("image/png",p)
 end
 
-function pgfplot(y1,y2,y3; leg = ("y1","y2","y3"), lab =("x","y"),tlt = "Figure")
+function pgfplot(y1,y2,y3; leg = ("y1","y2","y3"), lab =("x","y"),tlt = "Figure", path = "NA", Width = "0.6*\\textwidth", Legend_pos = "outer north east", PDF = false)
     x1 = 1:size(y1,1)
     x2 = 1:size(y2,1)
     x3 = 1:size(y3,1)
@@ -72,8 +84,8 @@ function pgfplot(y1,y2,y3; leg = ("y1","y2","y3"), lab =("x","y"),tlt = "Figure"
         xlabel = lab[1],
         ylabel = lab[2],
         title = tlt,
-        width="0.6*\\textwidth",
-        legend_pos="outer north east",
+        width = Width,
+        legend_pos = Legend_pos,
         cycle_list_name = "edu3",
         xmin = extrema(x1)[1],
         xmax = extrema(x1)[2],
@@ -86,10 +98,16 @@ function pgfplot(y1,y2,y3; leg = ("y1","y2","y3"), lab =("x","y"),tlt = "Figure"
             PlotInc(Table([:x => x3, :y => y3])),
             LegendEntry(leg[3])
         )
-    display("image/png",p)
+        if path != "NA"
+            pgfsave(path*".tex", p, include_preamble = false)
+            if PDF
+                pgfsave(path*".pdf", p)
+            end  
+        end
+        display("image/png",p)
 end
 
-function pgfplot(y1,y2,y3,y4; leg = ("y1","y2","y3","y4"), lab =("x","y"),tlt = "Figure")
+function pgfplot(y1,y2,y3,y4; leg = ("y1","y2","y3","y4"), lab =("x","y"),tlt = "Figure", path = "NA", Width = "0.6*\\textwidth", Legend_pos = "outer north east", PDF = false)
     x1 = 1:size(y1,1)
     x2 = 1:size(y2,1)
     x3 = 1:size(y3,1)
@@ -98,8 +116,8 @@ function pgfplot(y1,y2,y3,y4; leg = ("y1","y2","y3","y4"), lab =("x","y"),tlt = 
         xlabel = lab[1],
         ylabel = lab[2],
         title = tlt,
-        width="0.6*\\textwidth",
-        legend_pos="outer north east",
+        width = Width,
+        legend_pos = Legend_pos,
         cycle_list_name = "edu4",
         xmin = extrema(x1)[1],
         xmax = extrema(x1)[2],
@@ -113,5 +131,14 @@ function pgfplot(y1,y2,y3,y4; leg = ("y1","y2","y3","y4"), lab =("x","y"),tlt = 
             Plot(Table([:x => x4, :y => y4])),
             LegendEntry(leg[4])
         )
-    display("image/png",p)
+        if path != "NA"
+            pgfsave(path*".tex", p, include_preamble = false)
+            if PDF
+                pgfsave(path*".pdf", p)
+            end  
+        end
+        display("image/png",p)
 end
+
+
+
