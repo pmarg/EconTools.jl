@@ -22,10 +22,8 @@ function initialize_pgfplots()
     push!(PGFPlotsX.CUSTOM_PREAMBLE, pgfplots_pre)
 
 end
- xtick=[3,8,13,18,23,28,30],
-  xticklabels ={"25-34","35-44","45-54","55-64","65-74","75+"},
-function pgfplot(y; Legend = "y1", Label =("x","y"), Title = "Figure", Path = "NA", Width = "0.6*\\textwidth", Legend_pos = "outer north east", PDF = false, Xtick = false, Xticklabels = false )
 
+function pgfplot(y; Legend = "y1", Label =("x","y"), Title = "Figure", Path = "NA", Width = "0.6*\\textwidth", Legend_pos = "outer north east", PDF = false, Xtick = false, Xticklabels = false )
     x = 1:size(y,1)
     if Xtick
         p = @pgf Axis({
