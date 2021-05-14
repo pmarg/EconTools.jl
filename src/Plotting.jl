@@ -25,7 +25,7 @@ end
 
 function pgfplot(y; Legend = "y1", Label =("x","y"), Title = "Figure", Path = "NA", Width = "0.6*\\textwidth", Legend_pos = "outer north east", PDF = false, Xtick = false, Xticklabels = false )
     x = 1:size(y,1)
-    if Xtick
+    if !Xtick
         p = @pgf Axis({
             xlabel = Label[1],
             ylabel = Label[2],
@@ -68,7 +68,7 @@ end
 function pgfplot(y1,y2; Legend = ("y1","y2"), Label =("x","y"),Title = "Figure", Path = "NA", Width = "0.6*\\textwidth", Legend_pos = "outer north east", PDF = false, Xtick = false, Xticklabels = false)
     x1 = 1:size(y1,1)
     x2 = 1:size(y2,1)
-    if Xtick
+    if !Xtick
         p = @pgf Axis({
             xlabel = Label[1],
             ylabel = Label[2],
@@ -119,7 +119,7 @@ function pgfplot(y1,y2,y3; Legend = ("y1","y2","y3"), Label = ("x","y"), Title =
     x1 = 1:size(y1,1)
     x2 = 1:size(y2,1)
     x3 = 1:size(y3,1)
-    if Xtick
+    if !Xtick
         p = @pgf Axis({
             xlabel = Label[1],
             ylabel = Label[2],
@@ -174,7 +174,7 @@ function pgfplot(y1,y2,y3,y4; Legend = ("y1","y2","y3","y4"), Label =("x","y"), 
     x2 = 1:size(y2,1)
     x3 = 1:size(y3,1)
     x4 = 1:size(y4,1)
-    if Xtick
+    if !Xtick
         p = @pgf Axis({
             xlabel = Label[1],
             ylabel = Label[2],
