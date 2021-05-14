@@ -8,9 +8,9 @@ function pivot_longer(df::AbstractDataFrame,bycol::Symbol,cols::Vector{Symbol};p
         temp = select(df,Regex(String(col)))
         @inbounds for colname ∈ names(temp)
           if separator
-              m = match(r"(?<Name>\w+)_(?<Value>\d+)",String(colname))
+              m = match(Regex("($(col))(?<Value>\\d+)"),String(colname))
           else
-              m = match(r"(?<Name>\D+)(?<Value>\d+)",String(colname))
+              m = match(Regex("($(col))(?<Value>\\d+)"),String(colname))
           end
           if m == nothing
             println("Column $(col) has no regex match")
@@ -32,6 +32,9 @@ function pivot_longer(df::AbstractDataFrame,bycol::Symbol,cols::Vector{Symbol};p
     end
     return df_longer
 end
+
+
+match(r"(age)(?<Value>\d+)",String(:age67))
 
 function reshape_results!(mc,D)
   N = D.N
