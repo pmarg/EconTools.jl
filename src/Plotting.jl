@@ -26,9 +26,9 @@ end
 function pgfplot(y; Legend = "y1", Label =("x","y"), Title = "Figure", Path = "NA", Width = "0.6*\\textwidth", Legend_pos = "outer north east", PDF = false )
     x = 1:size(y,1)
     p = @pgf Axis({
-        xlabel = lab[1],
-        ylabel = lab[2],
-        title = tlt,
+        xlabel = Label[1],
+        ylabel = Label[2],
+        title = Title,
         width = Width,
         legend_pos = Legend_pos,
         cycle_list_name = "edu2",
@@ -36,12 +36,12 @@ function pgfplot(y; Legend = "y1", Label =("x","y"), Title = "Figure", Path = "N
         xmax = extrema(x)[2],
         },
             PlotInc(Table([:x => x, :y => y])),
-            LegendEntry(leg),
+            LegendEntry(Legend),
         )
-        if path != "NA"
-            pgfsave(path*".tex", p, include_preamble = false)
+        if Path != "NA"
+            pgfsave(Path*".tex", p, include_preamble = false)
             if PDF
-                pgfsave(path*".pdf", p)
+                pgfsave(Path*".pdf", p)
             end  
         end
         display("image/png",p)
@@ -52,9 +52,9 @@ function pgfplot(y1,y2; Legend = ("y1","y2"), Label =("x","y"),Title = "Figure",
     x2 = 1:size(y2,1)
 
     p = @pgf Axis({
-        xlabel = lab[1],
-        ylabel = lab[2],
-        title = tlt,
+        xlabel = Label[1],
+        ylabel = Label[2],
+        title = Title,
         width = Width,
         legend_pos = Legend_pos,
         cycle_list_name = "edu2",
@@ -63,27 +63,27 @@ function pgfplot(y1,y2; Legend = ("y1","y2"), Label =("x","y"),Title = "Figure",
 
         },
             Plot(Table([:x => x1, :y => y1])),
-            LegendEntry(leg[1]),
+            LegendEntry(Legend[1]),
             Plot(Table([:x => x2, :y => y2])),
-            LegendEntry(leg[2])
+            LegendEntry(Legend[2])
         )
-        if path != "NA"
-            pgfsave(path*".tex", p, include_preamble = false)
+        if Path != "NA"
+            pgfsave(Path*".tex", p, include_preamble = false)
             if PDF
-                pgfsave(path*".pdf", p)
+                pgfsave(Path*".pdf", p)
             end  
         end
         display("image/png",p)
 end
 
-function pgfplot(y1,y2,y3; leg = ("y1","y2","y3"), lab =("x","y"),tlt = "Figure", path = "NA", Width = "0.6*\\textwidth", Legend_pos = "outer north east", PDF = false)
+function pgfplot(y1,y2,y3; Legend = ("y1","y2","y3"), Label = ("x","y"), Title = "Figure", Path = "NA", Width = "0.6*\\textwidth", Legend_pos = "outer north east", PDF = false)
     x1 = 1:size(y1,1)
     x2 = 1:size(y2,1)
     x3 = 1:size(y3,1)
     p = @pgf Axis({
-        xlabel = lab[1],
-        ylabel = lab[2],
-        title = tlt,
+        xlabel = Label[1],
+        ylabel = Label[2],
+        title = Title,
         width = Width,
         legend_pos = Legend_pos,
         cycle_list_name = "edu3",
@@ -92,30 +92,30 @@ function pgfplot(y1,y2,y3; leg = ("y1","y2","y3"), lab =("x","y"),tlt = "Figure"
 
         },
             PlotInc(Table([:x => x1, :y => y1])),
-            LegendEntry(leg[1]),
+            LegendEntry(Legend[1]),
             PlotInc(Table([:x => x2, :y => y2])),
-            LegendEntry(leg[2]),
+            LegendEntry(Legend[2]),
             PlotInc(Table([:x => x3, :y => y3])),
-            LegendEntry(leg[3])
+            LegendEntry(Legend[3])
         )
-        if path != "NA"
-            pgfsave(path*".tex", p, include_preamble = false)
+        if Path != "NA"
+            pgfsave(Path*".tex", p, include_preamble = false)
             if PDF
-                pgfsave(path*".pdf", p)
+                pgfsave(Path*".pdf", p)
             end  
         end
         display("image/png",p)
 end
 
-function pgfplot(y1,y2,y3,y4; leg = ("y1","y2","y3","y4"), lab =("x","y"),tlt = "Figure", path = "NA", Width = "0.6*\\textwidth", Legend_pos = "outer north east", PDF = false)
+function pgfplot(y1,y2,y3,y4; Legend = ("y1","y2","y3","y4"), Label =("x","y"), Title = "Figure", Path = "NA", Width = "0.6*\\textwidth", Legend_pos = "outer north east", PDF = false)
     x1 = 1:size(y1,1)
     x2 = 1:size(y2,1)
     x3 = 1:size(y3,1)
     x4 = 1:size(y4,1)
     p = @pgf Axis({
-        xlabel = lab[1],
-        ylabel = lab[2],
-        title = tlt,
+        xlabel = Label[1],
+        ylabel = Label[2],
+        title = Title,
         width = Width,
         legend_pos = Legend_pos,
         cycle_list_name = "edu4",
@@ -123,18 +123,18 @@ function pgfplot(y1,y2,y3,y4; leg = ("y1","y2","y3","y4"), lab =("x","y"),tlt = 
         xmax = extrema(x1)[2],
         },
             Plot(Table([:x => x1, :y => y1])),
-            LegendEntry(leg[1]),
+            LegendEntry(Legend[1]),
             Plot(Table([:x => x2, :y => y2])),
-            LegendEntry(leg[2]),
+            LegendEntry(Legend[2]),
             Plot(Table([:x => x3, :y => y3])),
-            LegendEntry(leg[3]),
+            LegendEntry(Legend[3]),
             Plot(Table([:x => x4, :y => y4])),
-            LegendEntry(leg[4])
+            LegendEntry(Legend[4])
         )
-        if path != "NA"
-            pgfsave(path*".tex", p, include_preamble = false)
+        if Path != "NA"
+            pgfsave(Path*".tex", p, include_preamble = false)
             if PDF
-                pgfsave(path*".pdf", p)
+                pgfsave(Path*".pdf", p)
             end  
         end
         display("image/png",p)
