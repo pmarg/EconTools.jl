@@ -1,5 +1,5 @@
 
-function pivot_longer(df::AbstractDataFrame,bycol::Symbol,cols::Vector{Symbol};period = :Period)
+function pivot_longer(df::AbstractDataFrame,bycol::Symbol,cols::Vector{Symbol};period = :Period, separator = true)
     # temp = nothing
      df_longer = nothing
      m = nothing
@@ -7,8 +7,12 @@ function pivot_longer(df::AbstractDataFrame,bycol::Symbol,cols::Vector{Symbol};p
         try
         temp = select(df,Regex(String(col)))
         @inbounds for colname ∈ names(temp)
-            m = match(r"(?<Name>\w+)_(?<Value>\d+)",String(colname))
-            rename!(temp,colname=>Symbol(m[2]))
+          if separator
+              m = match(r"(?<Name>\w+)_(?<Value>\d+)",String(colname))
+          else
+              m = match(r"(?<Name>\D+)(?<Value>\d+)",String(colname))
+          end
+          rename!(temp,colname=>Symbol(m[2]))
         end
         temp[!,bycol] = df[!,bycol]
         temp = stack(temp,Not(bycol),variable_eltype=String)
@@ -373,4 +377,20 @@ end
 
 function readGzip(path;head = 1)
   df = CSV.File(transcode(GzipDecompressor, Mmap.mmap(path)),header = head) |> DataFrame
+end
+
+function createAgeGroups(df::DataFrame,agemin::Int64,agemax::Int64,step::Int64,agevar::Symbol,varname::Symbol)
+    agerange = collect(agemin:step:agemax)
+    df[!,varname] .= missing
+    N = length(agerange)
+    for i in 1:nrow(df)
+        for j in 1:N-1
+            if !ismissing(df[i,agevar])
+                if df[i,agevar] ≥ agerange[j]  && df[i,agevar] < agerange[j+1]
+                    df[i,varname] = j
+                end
+            end
+        end
+    end
+    return df
 end
