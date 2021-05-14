@@ -12,7 +12,11 @@ function pivot_longer(df::AbstractDataFrame,bycol::Symbol,cols::Vector{Symbol};p
           else
               m = match(r"(?<Name>\D+)(?<Value>\d+)",String(colname))
           end
-          rename!(temp,colname=>Symbol(m[2]))
+          if m == nothing
+            println("Column $(col) has no regex match")
+          else
+            rename!(temp,colname=>Symbol(m[2]))
+          end
         end
         temp[!,bycol] = df[!,bycol]
         temp = stack(temp,Not(bycol),variable_eltype=String)
