@@ -82,10 +82,8 @@ data[:bin_income] # with values 1, 2, 3
 """
 function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
   if length(pctls) == 2
-    temp = by(data, by_variable) do df
-       (pctl1 = quantile(df[!,variable],pctls[1]),pctl2 = quantile(df[!,variable],pctls[2]))
-    end
-    data = join(data,temp,on = by_variable)
+    temp = combine(groupby(data,by_variable), variable => (x -> [quantile(x, pctls)]) => [:pctl1, :pctl2])
+    data = innerjoin(data,temp,on = by_variable)
     name = Symbol("bin_$variable")
     data[!,name].= 0
     for i ∈ eachindex(data[!,variable])
@@ -99,10 +97,8 @@ function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
     end
     rename!(data,:pctl1 => Symbol("$(variable)_p1"),:pctl2 => Symbol("$(variable)_p2"))
   elseif length(pctls) == 3
-     temp = by(data, by_variable) do df
-        (pctl1 = quantile(df[!,variable],pctls[1]),pctl2 = quantile(df[!,variable],pctls[2]), pctl3 = quantile(df[!,variable],pctls[3]))
-     end
-     data = join(data,temp,on = by_variable)
+     temp = combine(groupby(data,by_variable), variable => (x -> [quantile(x, pctls)]) => [:pctl1, :pctl2, :pctl3])
+     data = innerjoin(data,temp,on = by_variable)
      name = Symbol("bin_$variable")
      data[!,name].= 0
      for i ∈ eachindex(data[!,variable])
@@ -118,10 +114,8 @@ function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
      end
      rename!(data,:pctl1 => Symbol("$(variable)_p1"),:pctl2 => Symbol("$(variable)_p2"),:pctl3 => Symbol("$(variable)_p3"))
   elseif length(pctls) == 4
-    temp = by(data, by_variable) do df
-       (pctl1 = quantile(df[!,variable],pctls[1]),pctl2 = quantile(df[!,variable],pctls[2]), pctl3 = quantile(df[!,variable],pctls[3]), pctl4 = quantile(df[!,variable],pctls[4]))
-    end
-    data = join(data,temp,on = by_variable)
+    temp = combine(groupby(data,by_variable), variable => (x -> [quantile(x, pctls)]) => [:pctl1, :pctl2, :pctl3, :pctl4])
+    data = innerjoin(data,temp,on = by_variable)
     name = Symbol("bin_$variable")
     data[!,name].= 0
     for i ∈ eachindex(data[!,variable])
@@ -139,11 +133,9 @@ function percentiles!(data,by_variable,variable;pctls = [0.05, 0.5, 0.95])
     end
     rename!(data,:pctl1 => Symbol("$(variable)_p1"),:pctl2 => Symbol("$(variable)_p2"),:pctl3 => Symbol("$(variable)_p3"),:pctl4 => Symbol("$(variable)_p4"))
   elseif length(pctls) == 9
-    temp = by(data, by_variable) do df
-       (pctl1 = quantile(df[!,variable],pctls[1]),pctl2 = quantile(df[!,variable],pctls[2]), pctl3 = quantile(df[!,variable],pctls[3]), pctl4 = quantile(df[!,variable],pctls[4]), pctl5 = quantile(df[!,variable],pctls[5]),
-       pctl6 = quantile(df[!,variable],pctls[6]),pctl7 = quantile(df[!,variable],pctls[7]), pctl8 = quantile(df[!,variable],pctls[8]), pctl9 = quantile(df[!,variable],pctls[9]))
-    end
-    data = join(data,temp,on = by_variable)
+    temp = combine(groupby(data,by_variable), variable => (x -> [quantile(x, pctls)]) => [:pctl1, :pctl2, :pctl3, :pctl4, :pctl5, :pctl6, :pctl7, :pctl8, :pctl9])
+
+    data = innerjoin(data,temp,on = by_variable)
     name = Symbol("bin_$variable")
     data[!,name].= 0
     for i ∈ eachindex(data[!,variable])
