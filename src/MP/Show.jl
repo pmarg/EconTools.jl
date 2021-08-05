@@ -4,7 +4,7 @@ function Base.show(io::IO, x::ParameterGroup)
     desc = Dict{Symbol,Any}()
     for name in fieldnames(typeof(x))
         if typeof(getfield(x,name))<:AbstractParameter
-            if getfield(getfield(x,name),:value) <: Real 
+            if typeof(getfield(getfield(x,name),:value)) <: Real 
                 vals[name] = round.(getfield(getfield(x,name),:value),digits = 3)
                 desc[name] =  getfield(getfield(x,name),:description)
             else
@@ -43,7 +43,7 @@ function Base.show(io::IO,::MIME"text/plain", x::ParameterGroup)
     desc = Dict{Symbol,Any}()
     for name in fieldnames(typeof(x))
         if typeof(getfield(x,name))<:AbstractParameter
-            if getfield(getfield(x,name),:value) <: Real 
+            if typeof(getfield(getfield(x,name),:value)) <: Real 
                 vals[name] = round.(getfield(getfield(x,name),:value),digits = 3)
                 desc[name] =  getfield(getfield(x,name),:description)
             else
