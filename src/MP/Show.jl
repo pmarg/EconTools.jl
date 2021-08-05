@@ -4,8 +4,13 @@ function Base.show(io::IO, x::ParameterGroup)
     desc = Dict{Symbol,Any}()
     for name in fieldnames(typeof(x))
         if typeof(getfield(x,name))<:AbstractParameter
-            vals[name] = round.(getfield(getfield(x,name),:value),digits = 3)
-            desc[name] =  getfield(getfield(x,name),:description)
+            if getfield(getfield(x,name),:value) <: Real 
+                vals[name] = round.(getfield(getfield(x,name),:value),digits = 3)
+                desc[name] =  getfield(getfield(x,name),:description)
+            else
+                vals[name] = getfield(getfield(x,name),:value)
+                desc[name] =  getfield(getfield(x,name),:description)
+            end
         else
             vals[name] = getfield(x,name)
             desc[name] = "No Description"
@@ -38,8 +43,13 @@ function Base.show(io::IO,::MIME"text/plain", x::ParameterGroup)
     desc = Dict{Symbol,Any}()
     for name in fieldnames(typeof(x))
         if typeof(getfield(x,name))<:AbstractParameter
-            vals[name] = round.(getfield(getfield(x,name),:value),digits = 3)
-            desc[name] =  getfield(getfield(x,name),:description)
+            if getfield(getfield(x,name),:value) <: Real 
+                vals[name] = round.(getfield(getfield(x,name),:value),digits = 3)
+                desc[name] =  getfield(getfield(x,name),:description)
+            else
+                vals[name] = getfield(getfield(x,name),:value)
+                desc[name] =  getfield(getfield(x,name),:description)
+            end
         else
             vals[name] = getfield(x,name)
             desc[name] = "No Description"
