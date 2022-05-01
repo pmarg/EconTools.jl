@@ -34,8 +34,6 @@ function pivot_longer(df::AbstractDataFrame,bycol::Symbol,cols::Vector{Symbol};p
 end
 
 
-match(r"(age)(?<Value>\d+)",String(:age67))
-
 function reshape_results!(mc,D)
   N = D.N
   J = D.J
