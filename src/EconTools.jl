@@ -19,7 +19,7 @@ include("Utilities.jl")
 include("Grids.jl")
 include("DataSetTools.jl")
 include("Plotting.jl")
-
+include("PostEstimations.jl")
 
 export expspace, tauchen, indices, simulate_markov_shocks, interpolate_params
 export reshape_results!, print_struct, print_parameters, percentiles!, at_percentiles!
@@ -44,6 +44,8 @@ export AbstractParameter,
 
 export df_means, df_var, df_medians, df_quantiles
 
-export global rng = StableRNG(123)
+global rng = StableRNG(123)
+
+export rng
 
 end # module
