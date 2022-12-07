@@ -1,7 +1,8 @@
 module EconTools
 
-using Statistics, Distributions, StatsFuns, Interpolations,  Statistics, StatsBase
+using Statistics, Distributions, StatsFuns, Interpolations,  Statistics, StatsBase, ModelParameters, Parameters, StableRNGs
 using PGFPlotsX,  DataFrames, TimerOutputs, Printf, Mmap, CodecZlib, CSV
+
 import TimerOutputs:prettytime
 ## Model Parameters
 import Base.getproperty
@@ -38,6 +39,11 @@ export AbstractParameter,
        bounds,
        set,
        ←,
-       show
+       show,
+       set
+
+export df_means, df_var, df_medians, df_quantiles
+
+export global rng = StableRNG(123)
 
 end # module
