@@ -391,3 +391,34 @@ function createAgeGroups(df::DataFrame,agemin::Int64,agemax::Int64,step::Int64,a
     end
     return df
 end
+
+function create_age_groups(start_age, end_age, interval)
+  age_groups = []
+  current_age = start_age
+  while current_age <= end_age
+    group_end_age = current_age + interval - 1
+    if group_end_age > end_age
+      group_end_age = end_age
+    end
+    group = (current_age, group_end_age)
+    push!(age_groups, group)
+    current_age += interval
+  end
+  return age_groups
+end
+
+function assign_age_groups(df, age, name, start_age, end_age, interval)
+  age_groups = create_age_groups(start_age, end_age, interval)
+  df[!, name] = CategoricalArray(undef, nrow(df))
+
+  for i in 1:nrow(df)
+    for group in age_groups
+      if df[i, age] >= group[1] && df[i, age] <= group[2]
+        df[i, name] = "$(group[1])-$(group[2])"
+        break
+      end
+    end
+  end
+
+  return df
+end
