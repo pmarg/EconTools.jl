@@ -441,37 +441,39 @@ function assign_groups!(df, var, varname, intervals; categories=[], topcoded=tru
     @assert num_intervals == length(categories) "Number of intervals must match the number of names."
   end
 
-  df[!, :varname] = CategoricalArray(undef, nrow(df))
+  df[!, varname] = CategoricalArray(undef, nrow(df))
 
   for i in 1:nrow(df)
-    assigned = false
-
     for j in 1:num_intervals
       if j < num_intervals
         if df[i, var] >= intervals[j] && df[i, var] < intervals[j+1]
           if !isempty(categories)
-            df[i, :varname] = categories[j]
+            df[i, varname] = categories[j]
           else
-            df[i, :varname] = string(j)
+            df[i, varname] = string(j)
           end
-          assigned = true
           break
         end
       else
-        if topcoded
-          if !isempty(categories)
-            df[i, :varname] = categories[num_intervals]
+        if df[i, var] >= intervals[j]
+          if topcoded
+            if !isempty(categories)
+              df[i, varname] = categories[num_intervals]
+            else
+              df[i, varname] = string(num_intervals)
+            end
           else
-            df[i, :varname] = string(num_intervals)
+            df[i, varname] = "-1"
           end
         else
-          df[i, :varname] = missing
+          df[i, varname] = "0"
         end
       end
     end
   end
+
   if numerical_cat
-    df[!, :varname] = levelcode.(df[!, :varname])
+    df[!, varname] = levelcode.(df[!, varname])
   end
   return df
 end
