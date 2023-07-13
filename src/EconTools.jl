@@ -44,6 +44,8 @@ export AbstractParameter,
 
 export df_means, df_var, df_medians, df_quantiles
 
+export create_age_groups
+
 global rng = StableRNG(123)
 
 export rng
