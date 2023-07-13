@@ -1,10 +1,11 @@
 name = "EconTools"
 uuid = "64fa5d70-d699-11e8-15b1-b5d2f9a37380"
 authors = ["Panagiotis Margaris <takismarg@gmail.com>"]
-version = "1.2.0"
+version = "1.2.1"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+CategoricalArrays = "324d7699-5711-5eae-9e2f-1d82baa6b597"
 CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
