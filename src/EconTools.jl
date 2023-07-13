@@ -1,7 +1,7 @@
 module EconTools
 
 using Statistics, Distributions, StatsFuns, Interpolations,  Statistics, StatsBase, ModelParameters, Parameters, StableRNGs
-using PGFPlotsX,  DataFrames, TimerOutputs, Printf, Mmap, CodecZlib, CSV
+using PGFPlotsX,  DataFrames, TimerOutputs, Printf, Mmap, CodecZlib, CSV,CategoricalArrays
 
 import TimerOutputs:prettytime
 ## Model Parameters
