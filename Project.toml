@@ -1,7 +1,7 @@
 name = "EconTools"
 uuid = "64fa5d70-d699-11e8-15b1-b5d2f9a37380"
 authors = ["Panagiotis Margaris <takismarg@gmail.com>"]
-version = "1.2.2"
+version = "1.2.3"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"

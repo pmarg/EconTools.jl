@@ -450,7 +450,7 @@ function assign_groups!(df, var, varname, intervals; categories=[], topcoded=tru
       if j < num_intervals
         if df[i, var] >= intervals[j] && df[i, var] < intervals[j+1]
           if !isempty(categories)
-            df[i, :varname] = names[j]
+            df[i, :varname] = categories[j]
           else
             df[i, :varname] = string(j)
           end
@@ -459,8 +459,8 @@ function assign_groups!(df, var, varname, intervals; categories=[], topcoded=tru
         end
       else
         if topcoded
-          if !isempty(names)
-            df[i, :varname] = names[num_intervals]
+          if !isempty(categories)
+            df[i, :varname] = categories[num_intervals]
           else
             df[i, :varname] = string(num_intervals)
           end
