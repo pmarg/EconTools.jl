@@ -422,3 +422,56 @@ function assign_age_groups(df, age, name, start_age, end_age, interval)
 
   return df
 end
+
+
+"""
+    assign_groups!(df, var, varname, intervals; categories=[], topcoded=true, numerical_cat=true)
+
+Function that assigns observations to groups based on the intervals provided. The intervals are inclusive on the left and exclusive on the right. The function can also assign names to the groups.
+
+# Examples
+```julia-repl
+temp = DataFrame(age=[25, 32, 40, 55])
+assign_groups(temp, :age, :agegroup5, (25:5:90))
+```
+"""
+function assign_groups!(df, var, varname, intervals; categories=[], topcoded=true, numerical_cat=true)
+  num_intervals = length(intervals)
+  if !isempty(categories)
+    @assert num_intervals == length(categories) "Number of intervals must match the number of names."
+  end
+
+  df[!, :varname] = CategoricalArray(undef, nrow(df))
+
+  for i in 1:nrow(df)
+    assigned = false
+
+    for j in 1:num_intervals
+      if j < num_intervals
+        if df[i, var] >= intervals[j] && df[i, var] < intervals[j+1]
+          if !isempty(categories)
+            df[i, :varname] = names[j]
+          else
+            df[i, :varname] = string(j)
+          end
+          assigned = true
+          break
+        end
+      else
+        if topcoded
+          if !isempty(names)
+            df[i, :varname] = names[num_intervals]
+          else
+            df[i, :varname] = string(num_intervals)
+          end
+        else
+          df[i, :varname] = missing
+        end
+      end
+    end
+  end
+  if numerical_cat
+    df[!, :varname] = levelcode.(df[!, :varname])
+  end
+  return df
+end
