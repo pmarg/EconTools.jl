@@ -22,7 +22,7 @@ include("Plotting.jl")
 include("PostEstimations.jl")
 
 export expspace, tauchen, indices, simulate_markov_shocks, interpolate_params
-export reshape_results!, print_struct, print_parameters, percentiles!, at_percentiles!
+export reshape_results!, print_struct, print_parameters
 export to, prettytime, @timeit, print_timer
 export show, pivot_longer,tab
 export writeGzip, readGzip
@@ -45,9 +45,5 @@ export AbstractParameter,
 export df_means, df_var, df_medians, df_quantiles
 
 export create_age_groups, assign_groups!
-
-global rng = StableRNG(123)
-
-export rng
 
 end # module
