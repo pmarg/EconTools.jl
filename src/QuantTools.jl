@@ -15,7 +15,7 @@ end
 """
     function simulate_markov_shocks(N::Int64, sim_z::Array{Int64}, Pz_cdf::Array{Float64})
 """
-function simulate_markov_shocks(N::Int64, sim_z::Array{Int64}, Pz_cdf::Array{Float64})
+function simulate_markov_shocks(N::Int64, sim_z::Array{Int64}, Pz_cdf::Array{Float64},rng)
     sim_zn=zeros(Int,N)
 
     u=rand(rng,N)
@@ -25,7 +25,7 @@ function simulate_markov_shocks(N::Int64, sim_z::Array{Int64}, Pz_cdf::Array{Flo
     return sim_zn
 end
 
-function simulate_markov_shocks(N::Int64, Pz_initial_cdf::Array{Float64})
+function simulate_markov_shocks(N::Int64, Pz_initial_cdf::Array{Float64},rng)
     sim_z=zeros(Int,N)
     u=rand(rng, N)
 
