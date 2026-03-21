@@ -1,9 +1,17 @@
 using EconTools
-@static if VERSION < v"0.7.0-DEV.2005"
-    using Base.Test
-else
-    using Test
-end
+using Test
+using DataFrames
+using StableRNGs
+using Statistics
+using LinearAlgebra
 
-include("test_PlottingTools.jl")
-include("test_DataSetTools.jl")
+# Import necessary plotting types
+using PGFPlotsX
+
+@testset "EconTools.jl" begin
+    include("test_grids.jl")
+    include("test_dataset_tools.jl")
+    include("test_statistics_dispatch.jl")
+    include("test_plotting.jl")
+    include("test_latex_output.jl")
+end
