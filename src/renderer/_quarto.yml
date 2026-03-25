@@ -48,13 +48,16 @@ format:
     # LaTeX packages for tables and figures
     include-in-header:
       - text: |
+          % Math and symbols
           \usepackage{amsmath}
+          \usepackage{amssymb}
+
+          % Tables
           \usepackage{booktabs}
           \usepackage{longtable}
           \usepackage{array}
           \usepackage{multirow}
           \usepackage{wrapfig}
-          \usepackage{float}
           \usepackage{colortbl}
           \usepackage{pdflscape}
           \usepackage{tabu}
@@ -63,13 +66,29 @@ format:
           \usepackage[normalem]{ulem}
           \usepackage{makecell}
           \usepackage{tabularray}
-          \usepackage{graphicx}
-          \usepackage{morefloats}
           \usepackage{siunitx}
           \usepackage{dcolumn}
+
+          % Figures and floats
+          \usepackage{graphicx}
+          \usepackage{float}
+          \usepackage{morefloats}
           \usepackage[skip=5pt, justification=centering]{caption}
           \floatplacement{figure}{H}
           \floatplacement{table}{H}
+
+          % PGFPlots and TikZ for graphics
+          \usepackage{tikz}
+          \usepackage{pgfplots}
+          \pgfplotsset{compat=1.18}
+          \usepgfplotslibrary{groupplots}
+          \usepgfplotslibrary{fillbetween}
+          \usetikzlibrary{patterns}
+          \usetikzlibrary{arrows.meta}
+          \usetikzlibrary{positioning}
+          \usetikzlibrary{calc}
+
+          % Table array commands
           \UseTblrLibrary{booktabs}
           \UseTblrLibrary{siunitx}
           \newcommand{\tinytableTabularrayUnderline}[1]{\underline{#1}}
