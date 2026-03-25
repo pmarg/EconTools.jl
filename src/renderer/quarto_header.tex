@@ -1,0 +1,32 @@
+% Additional LaTeX packages for economic research tables and figures
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage[flushleft]{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{tabularray}
+\usepackage{graphicx}
+\usepackage{morefloats}
+\usepackage{siunitx}
+\usepackage{dcolumn}
+\usepackage[skip=5pt, justification=centering]{caption}
+
+% Float placement
+\floatplacement{figure}{H}
+\floatplacement{table}{H}
+
+% Commands for table compatibility
+\UseTblrLibrary{booktabs}
+\UseTblrLibrary{siunitx}
+\newcommand{\tinytableTabularrayUnderline}[1]{\underline{#1}}
+\newcommand{\tinytableTabularrayStrikeout}[1]{\sout{#1}}
+\NewTableCommand{\tinytableDefineColor}[3]{\definecolor{#1}{#2}{#3}}

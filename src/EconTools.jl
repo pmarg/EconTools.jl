@@ -8,12 +8,14 @@ A collection of reusable utilities for applied economics research, including:
 - **Parameter management**: Self-documenting parameter types with descriptions
 - **R integration**: ensure_r_packages for RCall workflows
 - **Performance profiling**: TimerOutputs integration
+- **Literate rendering**: literate_render for one-command PDF generation from .jl scripts
 
 # Dependencies
 - Core: DataFrames, Statistics, StatsBase, CategoricalArrays
 - Numerical: Distributions, StatsFuns, Interpolations
 - Plotting: PGFPlotsX
 - I/O: CSV, CodecZlib, Mmap
+- Rendering: Literate (for literate_render)
 - Other: Printf, TimerOutputs, ModelParameters, Parameters, StableRNGs
 - Optional: GLM (for residualize_pgs), RCall (for ensure_r_packages)
 """
@@ -22,6 +24,7 @@ module EconTools
 ## Core dependencies
 using Statistics, Distributions, StatsFuns, StatsBase, StableRNGs
 using PGFPlotsX, DataFrames, Printf, CategoricalArrays
+using Literate
 
 ## Optional dependencies (needed for specific functions)
 ## GLM: Required for residualize_pgs()
@@ -46,6 +49,9 @@ include("simulations/simulations.jl")
 include(joinpath("paper", "tables", "tables.jl"))
 include(joinpath("paper", "figures", "figures.jl"))
 include(joinpath("paper", "figures", "pgfplots_setup.jl"))
+
+## Literate rendering
+include(joinpath("renderer", "literate_render.jl"))
 
 
 ## ============================================================================
@@ -85,5 +91,8 @@ export AbstractParameter,
        set,
        ←,
        show
+
+## Literate rendering
+export literate_render, literate_render_batch
 
 end # module EconTools
