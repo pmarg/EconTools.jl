@@ -545,5 +545,372 @@ function literate_render_batch(input_files::Vector{String}; kwargs...)
 end
 
 
+"""
+    literate_render_master(master_file::String;
+                          search_subdirs::Bool=true,
+                          execute::Bool=true,
+                          notebook_subdir::String="notebooks",
+                          quarto_config::Union{String,Nothing}=nothing,
+                          cleanup_temp::Bool=true,
+                          verbose::Bool=true)
+
+Create a master PDF document that combines multiple Literate.jl scripts.
+
+This function:
+1. Finds all .jl files in the master file's directory (and optionally subdirectories)
+2. Converts each .jl file to .qmd (Quarto markdown) using Literate
+3. Creates a master .qmd file that includes all individual .qmd files
+4. Renders the master document to PDF
+5. Cleans up temporary files
+
+# Arguments
+- `master_file::String`: Path to master .jl file that defines the document structure
+
+# Keyword Arguments
+- `search_subdirs::Bool=true`: Search subdirectories for .jl files
+- `execute::Bool=true`: Execute notebook cells during conversion
+- `notebook_subdir::String="notebooks"`: Subdirectory name for outputs
+- `quarto_config::Union{String,Nothing}=nothing`: Path to custom _quarto.yml
+- `cleanup_temp::Bool=true`: Remove temporary files
+- `verbose::Bool=true`: Print progress messages
+
+# Master File Format
+The master .jl file should contain special comments that define the document structure:
+
+```julia
+# # Model Calibration: Complete Overview
+#
+# ## Introduction
+# This document combines all calibration procedures.
+
+#= INCLUDE_START
+medical_spending/meps.jl
+savings/hrs_savings.jl
+income/hrs_income.jl
+INCLUDE_END =#
+
+# ## Summary
+# All calibration procedures are documented above.
+```
+
+The `INCLUDE_START ... INCLUDE_END` block lists .jl files to include (paths relative to master file's directory).
+Files outside this block are discovered automatically if `search_subdirs=true`.
+
+# Returns
+- Named tuple: `(master_pdf=..., master_qmd=..., included_files=..., dir=...)`
+
+# Example
+```julia
+using EconTools
+
+# Create master document
+literate_render_master("data/calibration/calibration_master.jl")
+
+# Suppress execution for quick drafts
+literate_render_master("data/calibration/calibration_master.jl"; execute=false)
+
+# Only include explicitly listed files (ignore auto-discovery)
+literate_render_master("calibration_master.jl"; search_subdirs=false)
+```
+
+# Directory Structure
+```
+data/calibration/
+├── calibration_master.jl         # Master file with structure
+├── medical_spending/
+│   └── meps.jl                    # Individual analysis
+├── savings/
+│   └── hrs_savings.jl             # Individual analysis
+└── notebooks/                     # Generated
+    ├── calibration_master.pdf    # ← Final merged PDF
+    ├── calibration_master.qmd    # Master Quarto file
+    ├── meps.qmd                  # Individual Quarto files
+    ├── hrs_savings.qmd
+    └── ...
+```
+"""
+function literate_render_master(master_file::String;
+                               search_subdirs::Bool=true,
+                               execute::Bool=true,
+                               notebook_subdir::String="notebooks",
+                               quarto_config::Union{String,Nothing}=nothing,
+                               cleanup_temp::Bool=true,
+                               verbose::Bool=true)
+
+    # ===== Input Validation =====
+    project_root = find_project_root()
+
+    if isabspath(master_file)
+        master_path = master_file
+    else
+        master_path = joinpath(project_root, master_file)
+    end
+
+    master_path = abspath(master_path)
+    if !isfile(master_path)
+        error("Master file does not exist: $master_path")
+    end
+    if !endswith(master_path, ".jl")
+        error("Master file must have .jl extension: $master_path")
+    end
+
+    verbose && println("="^70)
+    verbose && println("Creating Master Document")
+    verbose && println("="^70)
+    verbose && println("Project root: $project_root")
+    verbose && println("Master file: $master_path")
+
+    # ===== Directory Setup =====
+    master_dir = dirname(master_path)
+    master_basename = splitext(basename(master_path))[1]
+    notebooks_dir = joinpath(master_dir, notebook_subdir)
+
+    if !isdir(notebooks_dir)
+        verbose && println("Creating output directory: $notebooks_dir")
+        mkpath(notebooks_dir)
+    end
+
+    # ===== Find Quarto Config =====
+    quarto_yml = find_quarto_config(master_dir, quarto_config)
+    if !isnothing(quarto_yml) && verbose
+        println("Using Quarto config: $quarto_yml")
+    end
+
+    # ===== Parse Master File for Explicit Includes =====
+    verbose && println("\n" * "="^70)
+    verbose && println("Step 1: Parsing master file")
+    verbose && println("="^70)
+
+    explicit_includes = String[]
+    master_content = read(master_path, String)
+
+    # Look for INCLUDE_START ... INCLUDE_END block
+    include_pattern = r"#=\s*INCLUDE_START\s*\n(.*?)\nINCLUDE_END\s*=#"sm
+    m = match(include_pattern, master_content)
+
+    if !isnothing(m)
+        # Parse file list
+        include_block = m.captures[1]
+        for line in split(include_block, '\n')
+            line = strip(line)
+            if !isempty(line) && !startswith(line, '#')
+                # Resolve relative to master file's directory
+                include_path = joinpath(master_dir, line)
+                if isfile(include_path)
+                    push!(explicit_includes, include_path)
+                    verbose && println("  Found explicit include: $line")
+                else
+                    @warn "Explicit include not found: $line (resolved to: $include_path)"
+                end
+            end
+        end
+    end
+
+    # ===== Auto-discover Additional Files =====
+    discovered_files = String[]
+
+    if search_subdirs
+        verbose && println("\nSearching for additional .jl files...")
+
+        for (root, dirs, files) in walkdir(master_dir)
+            # Skip notebooks directory
+            if occursin(notebook_subdir, root)
+                continue
+            end
+
+            for file in files
+                if endswith(file, ".jl")
+                    filepath = joinpath(root, file)
+
+                    # Skip master file and already-included files
+                    if filepath == master_path || filepath in explicit_includes
+                        continue
+                    end
+
+                    push!(discovered_files, filepath)
+                    verbose && println("  Discovered: $(relpath(filepath, master_dir))")
+                end
+            end
+        end
+    end
+
+    # ===== Combine File Lists =====
+    all_files = vcat(explicit_includes, discovered_files)
+
+    if isempty(all_files)
+        @warn "No .jl files found to include in master document"
+    end
+
+    verbose && println("\nTotal files to include: $(length(all_files))")
+
+    # ===== Step 2: Convert Individual Files to .qmd =====
+    verbose && println("\n" * "="^70)
+    verbose && println("Step 2: Converting individual .jl files to .qmd")
+    verbose && println("="^70)
+
+    qmd_files = String[]
+
+    for jl_file in all_files
+        file_basename = splitext(basename(jl_file))[1]
+        qmd_output = joinpath(notebooks_dir, file_basename * ".qmd")
+
+        verbose && println("Converting: $(relpath(jl_file, master_dir))")
+
+        try
+            Literate.markdown(
+                jl_file,
+                notebooks_dir;
+                execute=execute,
+                documenter=false,
+                flavor=Literate.QuartoFlavor()
+            )
+
+            # Verify output exists
+            if isfile(qmd_output)
+                push!(qmd_files, qmd_output)
+                verbose && println("  ✓ Created: $(basename(qmd_output))")
+            else
+                @warn "Expected .qmd file not created: $qmd_output"
+            end
+        catch e
+            @warn "Failed to convert $jl_file" exception=e
+        end
+    end
+
+    # ===== Step 3: Create Master .qmd File =====
+    verbose && println("\n" * "="^70)
+    verbose && println("Step 3: Creating master .qmd document")
+    verbose && println("="^70)
+
+    master_qmd_path = joinpath(notebooks_dir, master_basename * ".qmd")
+
+    # Extract title from master file (first # heading)
+    title = master_basename
+    title_match = match(r"^#\s+(.+)$"m, master_content)
+    if !isnothing(title_match)
+        title = strip(title_match.captures[1])
+    end
+
+    # Build master .qmd content
+    master_qmd_content = """
+    ---
+    title: "$title"
+    format: pdf
+    ---
+
+    """
+
+    # Add master file content (excluding INCLUDE block)
+    # Convert Literate syntax to Quarto markdown
+    master_md = replace(master_content, include_pattern => "")
+
+    # Convert Literate comments to markdown
+    for line in split(master_md, '\n')
+        if startswith(line, "# ")
+            # Markdown line - remove single #
+            master_qmd_content *= line[3:end] * "\n"
+        elseif startswith(line, "#=")
+            # Start of multiline comment
+            continue
+        elseif startswith(line, "=#")
+            # End of multiline comment
+            continue
+        elseif !isempty(strip(line))
+            # Code line - wrap in code block
+            master_qmd_content *= line * "\n"
+        else
+            master_qmd_content *= "\n"
+        end
+    end
+
+    # Add includes for individual .qmd files
+    if !isempty(qmd_files)
+        master_qmd_content *= "\n# Included Analyses\n\n"
+
+        for qmd_file in qmd_files
+            qmd_basename = basename(qmd_file)
+            # Use relative path for include
+            master_qmd_content *= "{{< include $(qmd_basename) >}}\n\n"
+        end
+    end
+
+    # Write master .qmd
+    write(master_qmd_path, master_qmd_content)
+    verbose && println("Created master document: $master_qmd_path")
+
+    # ===== Step 4: Render Master Document to PDF =====
+    verbose && println("\n" * "="^70)
+    verbose && println("Step 4: Rendering master document to PDF")
+    verbose && println("="^70)
+
+    # Copy quarto config if needed
+    if !isnothing(quarto_yml)
+        temp_quarto = joinpath(notebooks_dir, "_quarto.yml")
+        cp(quarto_yml, temp_quarto; force=true)
+    end
+
+    # Build Quarto command
+    cmd = `quarto render $master_qmd_path --to pdf --output-dir $notebooks_dir`
+
+    # Run Quarto
+    try
+        run(cmd)
+    catch e
+        error("Quarto master document rendering failed: $e")
+    end
+
+    master_pdf_path = joinpath(notebooks_dir, master_basename * ".pdf")
+
+    if !isfile(master_pdf_path)
+        error("Expected master PDF not found: $master_pdf_path")
+    end
+
+    verbose && println("✓ Master PDF created: $master_pdf_path")
+
+    # ===== Step 5: Cleanup =====
+    if cleanup_temp
+        verbose && println("\n" * "="^70)
+        verbose && println("Step 5: Cleaning up temporary files")
+        verbose && println("="^70)
+
+        cleanup_paths = [
+            joinpath(notebooks_dir, ".quarto"),
+            joinpath(notebooks_dir, "_quarto.yml"),
+            joinpath(notebooks_dir, ".gitignore"),
+            joinpath(master_dir, ".quarto")
+        ]
+
+        for path in cleanup_paths
+            if ispath(path)
+                verbose && println("Removing: $path")
+                rm(path; recursive=true, force=true)
+            end
+        end
+
+        verbose && println("✓ Cleanup complete")
+    end
+
+    # ===== Summary =====
+    if verbose
+        println("\n" * "="^70)
+        println("Master Document Complete!")
+        println("="^70)
+        println("Master PDF: $master_pdf_path")
+        println("Included files: $(length(all_files))")
+        println("  Explicit: $(length(explicit_includes))")
+        println("  Discovered: $(length(discovered_files))")
+        println("="^70)
+    end
+
+    return (
+        master_pdf=master_pdf_path,
+        master_qmd=master_qmd_path,
+        included_files=all_files,
+        qmd_files=qmd_files,
+        dir=notebooks_dir
+    )
+end
+
+
 # Export functions
-export literate_render, literate_render_batch
+export literate_render, literate_render_batch, literate_render_master

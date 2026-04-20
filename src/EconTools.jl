@@ -93,6 +93,6 @@ export AbstractParameter,
        show
 
 ## Literate rendering
-export literate_render, literate_render_batch
+export literate_render, literate_render_batch, literate_render_master
 
 end # module EconTools

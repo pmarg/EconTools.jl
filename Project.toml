@@ -1,6 +1,6 @@
 name = "EconTools"
 uuid = "64fa5d70-d699-11e8-15b1-b5d2f9a37380"
-version = "2.3.0"
+version = "2.4.0"
 authors = ["Panos Margaris <pmargaris.ac@gmail.com>"]
 
 [deps]
