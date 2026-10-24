@@ -2,7 +2,7 @@
     EconTools
 
 A collection of reusable utilities for applied economics research, including:
-- **Grid generation & numerical methods**: expspace, tauchen, bilerp_flat
+- **Grid generation & numerical methods**: expspace, tauchen, rouwenhorst, bilerp_flat
 - **Data manipulation**: pivot_longer, reshape_results!, tab, assign_quantile_groups
 - **LaTeX output**: save_latex_table, save_pgfplot for publication-ready tables & figures
 - **Parameter management**: Self-documenting parameter types with descriptions
@@ -59,7 +59,7 @@ include(joinpath("renderer", "literate_render.jl"))
 ## ============================================================================
 
 ## Grid generation and numerical methods
-export expspace, tauchen
+export expspace, tauchen, rouwenhorst
 export bilerp_flat
 export simulate_markov_shocks
 

@@ -89,6 +89,42 @@ function tauchen(N::Integer=9, ρ::Real=0.96, σ::Real=0.045, μ::Real=0.0, n_st
     return grid, Π, Π_cdf
 end
 
+"""
+    rouwenhorst(N::Integer, ρ::Real, σ::Real, μ::Real=0.0)
+Rouwenhorst's (1995) method for approximating an AR(1) process with a finite Markov chain
+```math
+    y_t = \\mu + \\rho y_{t-1} + \\epsilon_t
+```
+where \$\\epsilon_t \\sim N (0, \\sigma^2)\$. Unlike Tauchen's method, the chain matches the
+unconditional variance \$\\sigma^2/(1-\\rho^2)\$ and the first-order autocorrelation \$\\rho\$
+exactly for any `N`, which makes it the preferred method for highly persistent
+processes (ρ close to 1) and for few grid points (Kopecky and Suen, 2010).
+##### Arguments
+- `N::Integer`: Number of points in markov process
+- `ρ::Real` : Persistence parameter in AR(1) process
+- `σ::Real` : Standard deviation of random component of AR(1) process
+- `μ::Real(0.0)` : Mean of AR(1) process
+##### Returns
+- `grid, Π, Π_cdf` : The grid (evenly spaced over ±σ_y√(N-1) around μ/(1-ρ)), the
+  transition matrix and CDF of transition matrix, as in `tauchen`
+##### Notes
+- The stationary distribution is Binomial(N-1, 1/2) over the grid points.
+"""
+function rouwenhorst(N::Integer, ρ::Real, σ::Real, μ::Real=0.0)
+    N == 1 && return [μ / (1 - ρ)], ones(1, 1), ones(1, 1)
+    p = (1 + ρ) / 2
+    Π = [p 1-p; 1-p p]
+    for n in 3:N
+        z = zeros(n - 1)
+        Π = p .* [Π z; z' 0] .+ (1 - p) .* [z Π; 0 z'] .+
+            (1 - p) .* [z' 0; Π z] .+ p .* [0 z'; z Π]
+        Π[2:end-1, :] ./= 2  # interior rows were counted twice
+    end
+    ψ = sqrt(N - 1) * σ / sqrt(1 - ρ^2)
+    grid = collect(range(-ψ, ψ, length=N)) .+ μ / (1 - ρ)
+    return grid, Π, cumsum(Π, dims=2)
+end
+
 # Quantitative Methods Tools
 # Functions for simulating stochastic processes and parameter interpolation
 

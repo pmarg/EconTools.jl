@@ -49,6 +49,25 @@
         grid_mean, P_mean, _ = tauchen(7, 0.95, 0.05, 2.0, 4)
         @test mean(grid_mean) ≈ 2.0 / (1 - 0.95) atol=5.0  # μ/(1-ρ) = 2.0/0.05 = 40
     end
+
+    @testset "rouwenhorst" begin
+        for (N, ρ, σ) in ((2, 0.5, 0.2), (3, 0.933, 0.161), (5, 0.97, 0.1), (9, 0.0, 1.0))
+            grid, P, P_cdf = rouwenhorst(N, ρ, σ)
+            @test length(grid) == N && size(P) == (N, N)
+            @test all(P .>= 0) && all(sum(P, dims=2) .≈ 1.0)
+            @test P_cdf[:, end] ≈ ones(N)
+            # stationary distribution is Binomial(N-1, 1/2)
+            π = [binomial(N - 1, k) for k in 0:N-1] ./ 2^(N - 1)
+            @test π' * P ≈ π'
+            # exact unconditional variance and first-order autocorrelation
+            v = sum(π .* grid .^ 2)
+            @test v ≈ σ^2 / (1 - ρ^2)
+            @test sum(π[i] * P[i, j] * grid[i] * grid[j] for i in 1:N, j in 1:N) / v ≈ ρ atol = 1e-12
+        end
+        grid_mean, _, _ = rouwenhorst(5, 0.9, 0.1, 1.0)
+        @test mean(grid_mean) ≈ 1.0 / (1 - 0.9)
+        @test rouwenhorst(1, 0.9, 0.1)[2] == ones(1, 1)
+    end
 end
 
 @testset "Markov Chain Simulation" begin
