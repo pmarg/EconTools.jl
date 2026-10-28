@@ -42,5 +42,10 @@ no marks,very thick,color = color2\\\\%2
 no marks,very thick,dashed,color = color1\\\\%3
 no marks,very thick,dashed,color = color2\\\\%3
 }"
-push!(PGFPlotsX.CUSTOM_PREAMBLE, pgfplots_pre)
+## Called from EconTools.__init__: a top-level push! runs only when the package is
+## precompiled, so the colors and cycle lists were missing from every compiled figure.
+function add_pgfplots_preamble()
+    pgfplots_pre in PGFPlotsX.CUSTOM_PREAMBLE || push!(PGFPlotsX.CUSTOM_PREAMBLE, pgfplots_pre)
+    return nothing
+end
 export pgfplots_pre

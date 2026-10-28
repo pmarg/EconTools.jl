@@ -200,3 +200,38 @@
         end
     end
 end
+
+@testset "House-style line plots" begin
+    x = collect(1.0:5.0)
+    ax = line_plot([x, x[1:4]], [x .^ 2, x[1:4]]; labels=["Data", "Model"], xlabel="Age",
+                   ylabel="LFP", ymin=0, x_tick_label_style="{rotate=45}")
+    tex = print_tex(String, ax)
+    @test occursin("color={airforceblue}", tex) && occursin("color={cadmiumorange}", tex)
+    @test count("no marks", tex) == 2 && !occursin("grid", tex)
+    @test occursin("x tick label style={{rotate=45}}", tex) && occursin("ymin={0}", tex)
+    @test occursin("LegendEntry", tex) == false && count("\\addlegendentry", tex) == 2
+    @test_throws AssertionError line_plot(x, [x, x]; labels=["only one"])
+
+    panels = [(x, [x, 2x]) for _ in 1:4]
+    pic = group_line_plot(panels; layout=(2, 2), titles=["a", "b", "c", "d"], labels=["Data", "Model"],
+                          xlabel="Age", ylabel="LFP", ymin=0)
+    tex = print_tex(String, pic)
+    @test occursin("group size={2 by 2}", tex) && occursin("horizontal sep={44pt}", tex)
+    @test count("xlabel={Age}", tex) == 2 && count("ylabel={LFP}", tex) == 2  # bottom row, left column
+    @test count("\\addlegendentry", tex) == 2 && occursin("legend to name", tex)
+    @test occursin("group c1r2.south |- group c1r2.outer south", tex)
+    @test occursin("\\pgfplotslegendfromname", tex)
+    @test_throws AssertionError group_line_plot(panels; layout=(1, 3))
+    @test_throws AssertionError group_line_plot([(x, [x]), (x, [x, x])])
+
+    ## no labels: a plain group plot, no legend node
+    @test !occursin("pgfplotslegendfromname", print_tex(String, group_line_plot(panels[1:2])))
+    @test pgfplots_pre in PGFPlotsX.CUSTOM_PREAMBLE  # added at load (__init__)
+
+    mktempdir() do dir
+        if Sys.which("lualatex") !== nothing  # PDF needs LaTeX, may not be available in CI
+            save_figure(ax, joinpath(dir, "sub", "fig.pdf"))
+            @test isfile(joinpath(dir, "sub", "fig.tex")) && isfile(joinpath(dir, "sub", "fig.pdf"))
+        end
+    end
+end

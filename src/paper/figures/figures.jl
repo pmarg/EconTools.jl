@@ -4,8 +4,8 @@
 """
     initialize_pgfplots() -> nothing
 
-Documentation function. PGFPlotsX setup (color definitions, cycle lists) is
-automatically loaded when EconTools is imported via pgfplots_setup.jl.
+Documentation function. PGFPlotsX setup (color definitions, cycle lists) is added to
+`PGFPlotsX.CUSTOM_PREAMBLE` when EconTools is loaded (pgfplots_setup.jl).
 
 # Available Cycle Lists
 
@@ -409,4 +409,176 @@ function pgfplot(ys...;
     end
 
     return p
+end
+
+# House-style line plots: plain very thick lines without markers, no grid, the palette
+# below, legend centered below the figure. Colors are defined in pgfplots_pre.
+
+"""Line colors in order: airforceblue, cadmiumorange, asparagus, amaranth (pgfplots_pre)."""
+const PALETTE = ["airforceblue", "cadmiumorange", "asparagus", "amaranth"]
+
+"""Color of data series in data-vs-model plots (`PALETTE[1]`)."""
+const DATA_COLOR = PALETTE[1]
+
+"""Color of model series in data-vs-model plots (`PALETTE[2]`)."""
+const MODEL_COLOR = PALETTE[2]
+
+## Series i's x values: a shared vector, or one vector per series
+series_x(x, i) = eltype(x) <: AbstractVector ? x[i] : x
+
+## Axis option keys from keywords: underscores become spaces (x_tick_label_style → "x tick label style")
+option_key(k::Symbol) = replace(string(k), "_" => " ")
+
+function series_plots(x, ys, labels, colors)
+    plots = Any[]
+    for (i, y) in enumerate(ys)
+        push!(plots, @pgf PlotInc({no_marks, very_thick, color = colors[i]}, Coordinates(series_x(x, i), y)))
+        isempty(labels) || push!(plots, LegendEntry(labels[i]))
+    end
+    return plots
+end
+
+"""
+    line_plot(x, ys; labels=String[], xlabel="", ylabel="", colors=PALETTE,
+              width="0.6*\\\\textwidth", height=nothing, legend_columns=length(ys),
+              legend_y=-0.25, options...) -> Axis
+
+Single axis with one line per element of `ys`, in the house style: no markers, very
+thick lines, no grid, `colors[i]` for series i, legend centered below the axis.
+
+# Arguments
+- `x`: x values shared by all series, or a vector with one x vector per series (e.g.
+  data and model observed at different ages).
+- `ys`: vector of y vectors, one per series.
+- `labels`: legend entries, one per series; empty for no legend.
+- `colors`: colors defined in `pgfplots_pre` (`PALETTE`, `DATA_COLOR`, `MODEL_COLOR`).
+- `width`, `height`: axis size (the axis box itself: `scale only axis`); `height`
+  `nothing` keeps the pgfplots aspect ratio.
+- `legend_columns`: entries per legend row.
+- `legend_y`: legend's vertical position as a fraction of the axis height below its
+  bottom edge (more negative with rotated tick labels).
+- `options...`: any other axis option, underscores for spaces (`ymin=0`, `title="HS"`,
+  `xtick=[20, 30, 40]`, `x_tick_label_style="{rotate=45}"`).
+
+# Example
+```julia
+ax = line_plot([ages_data, ages_model], [lfp_data, lfp_model];
+               labels=["Data", "Model"], xlabel="Age", ylabel="LFP (\\\\%)", ymin=0)
+save_figure(ax, "figures/lfp_age")
+```
+"""
+function line_plot(x, ys; labels=String[], xlabel="", ylabel="", colors=PALETTE,
+                   width="0.6*\\textwidth", height=nothing, legend_columns=length(ys),
+                   legend_y=-0.25, options...)
+    @assert isempty(labels) || length(labels) == length(ys) "one label per series"
+    @assert length(colors) >= length(ys) "$(length(ys)) series but $(length(colors)) colors"
+    ax = @pgf Axis({
+        xlabel = xlabel,
+        ylabel = ylabel,
+        width = width,
+        scale_only_axis,
+        legend_style = {at = Coordinate(0.5, legend_y), anchor = "north", legend_columns = legend_columns, draw = "none"},
+    }, series_plots(x, ys, labels, colors)...)
+    isnothing(height) || (ax["height"] = height)
+    for (k, v) in options
+        ax[option_key(k)] = v
+    end
+    return ax
+end
+
+"""
+    group_line_plot(panels; layout=(1, length(panels)), titles=String[], labels=String[],
+                    xlabel="", ylabel="", colors=PALETTE, width="0.3*\\\\textwidth",
+                    height=nothing, horizontal_sep="44pt", vertical_sep="50pt",
+                    legend_columns=nothing, options...) -> TikzPicture
+
+Grid of axes with the same series in each, in the house style of `line_plot`. The x
+label is shown on the bottom row only, the y label on the left column only, and one
+legend is centered below the whole figure, under the bottom row's tick and axis labels
+(pgfplots `legend to name`, placed by a node after the group plot).
+
+# Arguments
+- `panels`: vector of `(x, ys)` tuples, one per panel, filled row by row; `x` and `ys`
+  as in `line_plot`. Every panel has the same series in the same order.
+- `layout`: `(rows, columns)`.
+- `titles`: one title per panel; empty for none.
+- `labels`: legend entries, one per series.
+- `width`, `height`: size of each axis box (`scale only axis`).
+- `horizontal_sep`, `vertical_sep`: gaps between axis boxes.
+- `legend_columns`: entries per legend row (default: all series in one row).
+- `options...`: axis options applied to every panel, underscores for spaces
+  (`ymin=0`, `xtick=[1, 5, 10]`, `xticklabels=["18", "26", "36"]`,
+  `x_tick_label_style="{rotate=45}"`).
+
+# Example
+```julia
+gp = group_line_plot([(ages, [hs_data, hs_model]), (ages, [col_data, col_model])];
+                     titles=["High School", "College"], labels=["Data", "Model"],
+                     xlabel="Age", ylabel="LFP (\\\\%)", ymin=0)
+save_figure(gp, "figures/lfp_age_by_edu")
+```
+"""
+function group_line_plot(panels; layout=(1, length(panels)), titles=String[], labels=String[],
+                         xlabel="", ylabel="", colors=PALETTE, width="0.3*\\textwidth",
+                         height=nothing, horizontal_sep="44pt", vertical_sep="50pt",
+                         legend_columns=nothing, options...)
+    rows, cols = layout
+    @assert rows * cols == length(panels) "layout $layout does not hold $(length(panels)) panels"
+    @assert isempty(titles) || length(titles) == length(panels) "one title per panel"
+    n_series = length(panels[1][2])
+    @assert all(length(p[2]) == n_series for p in panels) "every panel needs the same series"
+    @assert isempty(labels) || length(labels) == n_series "one label per series"
+    @assert length(colors) >= n_series "$n_series series but $(length(colors)) colors"
+
+    gp = @pgf GroupPlot({
+        group_style = {group_size = "$cols by $rows", horizontal_sep = horizontal_sep, vertical_sep = vertical_sep},
+        scale_only_axis,
+        no_markers,  # also in the named legend, which ignores the plots' no marks
+        width = width,
+    })
+    isnothing(height) || (gp.options["height"] = height)
+    for (k, v) in options
+        gp.options[option_key(k)] = v
+    end
+
+    legend_panel = (rows - 1) * cols + 1  # bottom-left
+    ## Unique per figure, as legend names are global in a LaTeX document
+    legend_name = "legend" * string(hash((panels, titles, labels, xlabel, ylabel)), base=36)
+    for (k, (x, ys)) in enumerate(panels)
+        row, col = divrem(k - 1, cols) .+ 1
+        opts = @pgf {}
+        isempty(titles) || (opts["title"] = titles[k])
+        row == rows && (opts["xlabel"] = xlabel)
+        col == 1 && (opts["ylabel"] = ylabel)
+        show_legend = k == legend_panel && !isempty(labels)
+        if show_legend
+            opts["legend to name"] = legend_name
+            opts["legend style"] = @pgf {legend_columns = something(legend_columns, n_series), draw = "none"}
+        end
+        push!(gp, opts, series_plots(x, ys, show_legend ? labels : String[], colors)...)
+    end
+    isempty(labels) && return TikzPicture(gp)
+    ## Legend node: horizontally at the center of the bottom row of axis boxes (the
+    ## bottom-left box's center plus (cols - 1)/2 box widths and gaps), vertically below
+    ## that box's outer edge (tick labels and x label included)
+    node = "\\node[anchor=north, yshift=-2pt, xshift={$((cols - 1) / 2)*$width+$((cols - 1) / 2)*$horizontal_sep}] " *
+           "at (group c1r$rows.south |- group c1r$rows.outer south) {\\pgfplotslegendfromname{$legend_name}};"
+    return TikzPicture(gp, node)
+end
+
+"""
+    save_figure(fig, path)
+
+Save an `Axis`, `GroupPlot` or `TikzPicture` as `path.tex` (a tikzpicture without preamble, for
+`\\\\input`) and `path.pdf` (compiled with `pgfplots_pre`). A `.tex` or `.pdf` extension
+on `path` is ignored; the directory is created if needed.
+"""
+function save_figure(fig, path::AbstractString)
+    base, ext = splitext(path)
+    ext in (".tex", ".pdf") || (base = path)
+    mkpath(dirname(abspath(base)))
+    pic = fig isa TikzPicture ? fig : TikzPicture(fig)
+    pgfsave(base * ".tex", pic; include_preamble=false)
+    pgfsave(base * ".pdf", TikzDocument(pic))
+    return nothing
 end

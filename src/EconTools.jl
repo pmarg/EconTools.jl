@@ -49,6 +49,7 @@ include("simulations/simulations.jl")
 include(joinpath("paper", "tables", "tables.jl"))
 include(joinpath("paper", "figures", "figures.jl"))
 include(joinpath("paper", "figures", "pgfplots_setup.jl"))
+__init__() = add_pgfplots_preamble()
 
 ## Literate rendering
 include(joinpath("renderer", "literate_render.jl"))
@@ -79,6 +80,7 @@ export mean, var, median, quantile, std
 ## LaTeX output for papers
 export save_latex_table, save_latex_table_simple, format_number
 export save_pgfplot, save_pgfplot_simple, create_line_plot
+export line_plot, group_line_plot, save_figure, PALETTE, DATA_COLOR, MODEL_COLOR
 
 ## Model Parameters system
 export AbstractParameter,
