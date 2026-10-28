@@ -1,7 +1,10 @@
 """
-    get_initial_guess(parameters)
+    get_initial_guess(parameters) -> Vector{Float64}
 
-Returns the values of parameter vector. Useful for initial guess for optimization.
+Values of a vector of parameters, e.g. as the starting point of an optimization.
+
+# Arguments
+- `parameters`: vector of `Parameter`s or `BoundedParameter`s.
 """
 function get_initial_guess(parameters)
     initial_guess = zeros(size(parameters, 1))
@@ -11,9 +14,11 @@ function get_initial_guess(parameters)
     return initial_guess
 end
 """
-    get_lower_bounds(parameters::Array{Float64)
+    get_lower_bounds(parameters) -> Vector{Float64}
 
-Returns the lower bounds of parameter vector. Useful for constrained optimization.
+Lower bounds of a vector of `BoundedParameter`s, e.g. for constrained optimization.
+
+See also [`get_upper_bounds`](@ref), [`get_bounds`](@ref).
 """
 function get_lower_bounds(parameters)
     lower_bound = zeros(size(parameters, 1))
@@ -23,9 +28,11 @@ function get_lower_bounds(parameters)
     return lower_bound
 end
 """
-    get_upper_bounds(parameters::Array{Float64)
+    get_upper_bounds(parameters) -> Vector{Float64}
 
-Returns the upper bounds of parameter vector. Useful for constrained optimization.
+Upper bounds of a vector of `BoundedParameter`s, e.g. for constrained optimization.
+
+See also [`get_lower_bounds`](@ref), [`get_bounds`](@ref).
 """
 function get_upper_bounds(parameters)
     upper_bound = zeros(size(parameters, 1))
@@ -35,9 +42,15 @@ function get_upper_bounds(parameters)
     return upper_bound
 end
 """
-    get_bounds(name::ParameterGroup, val::Symbol)
+    get_bounds(g::ParameterGroup, name::Symbol) -> Union{Tuple,Nothing}
+    get_bounds(g) -> (lower::Vector{Float64}, upper::Vector{Float64})
 
-Returns the lower and upper bound of a single parameter withing a `ParameterGroup`. Useful for constrained optimization.
+Bounds of parameters in a `ParameterGroup`, e.g. for constrained optimization.
+
+- With a field `name`: `(lb, ub)` of that `BoundedParameter`, or `nothing` (with a
+  warning) if it has no bounds.
+- Without: the lower and upper bounds of every field, in field order. A field that is
+  not a `BoundedParameter` logs an error and gets bounds `0.0`.
 """
 function get_bounds(name::ParameterGroup, val::Symbol)
     if typeof(getfield(name, val)) <: BoundedParameter
@@ -49,6 +62,7 @@ function get_bounds(name::ParameterGroup, val::Symbol)
         return nothing
     end
 end
+
 function get_bounds(parameters)
     upper_bound = zeros(size(fieldnames(typeof(parameters)), 1))
     lower_bound = zeros(size(upper_bound, 1))

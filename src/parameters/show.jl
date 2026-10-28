@@ -1,7 +1,11 @@
 """
-Extension of the `Base.show` function in order to print all the `AbstractParameter`s within a `ParameterGroup`, including the description in a readable format.
-"""
+    show(io::IO, g::ParameterGroup)
+    show(io::IO, ::MIME"text/plain", g::ParameterGroup)
 
+Print a parameter group as a table with one row per field: name, description and
+value (real values rounded to 3 digits). Fields that are not parameters show
+"No Description".
+"""
 function Base.show(io::IO, x::ParameterGroup)
     s1 = maximum(length.(string.(fieldnames(typeof(x)), "Variable")))
     vals = Dict{Symbol,Any}()
@@ -77,7 +81,11 @@ function Base.show(io::IO, ::MIME"text/plain", x::ParameterGroup)
     end
 end
 """
-Extension of the `Base.show` function in order to print all the `ParameterGroup`s, including the description in a readable format.
+    show(io::IO, p::ParameterSpace)
+    show(io::IO, ::MIME"text/plain", p::ParameterSpace)
+
+Print every parameter group of a parameter space, each as a table (see the
+`ParameterGroup` method).
 """
 function Base.show(io::IO, ::MIME"text/plain", x::ParameterSpace)
     for str in fieldnames(typeof(x))

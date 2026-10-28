@@ -1,7 +1,22 @@
 """
-    set(str,var::Symbol,val)
+    set(str, var::Symbol, val)
 
-Substitutes the value a single field `var` with `val`. Returns the modified `str`.
+Return a copy of the struct `str` with field `var` set to `val`; `str` itself is not
+modified (it may be immutable).
+
+If `var` is a `Parameter` or `BoundedParameter`, only its value changes; the
+description and bounds are kept. All other fields are copied.
+
+The struct is rebuilt with its keyword constructor, so its type must have one (e.g.
+defined with `@kwdef` or `Parameters.@with_kw`). If `str` has no field `var`, a
+warning lists the fields.
+
+# Examples
+```julia
+D2 = set(D, :N, 1000)
+```
+
+See also [`←`](@ref).
 """
 function set(str, var::Symbol, val)
     !any(i -> i == var, fieldnames(typeof(str))) && @warn "\n No field in struct $(typeof(str)) is named $(var)!\n Fields are $(fieldnames(typeof(str)))"
@@ -25,9 +40,17 @@ function set(str, var::Symbol, val)
     str = typeof(str)(; x...)
 end
 """
-    (←)(str, tpl::Tuple)
+    str ← (field, value)
+    str ← ((field1, value1), (field2, value2), ...)
 
-Substitutes the value of a single or multiple fields of struct `str`. The tuple has the form (field::Symbol, new_value). Returns the modified `str`.
+Return a copy of the struct `str` with one or several fields replaced, using
+[`set`](@ref) for each.
+
+# Examples
+```julia
+D2 = D ← (:J, 3)                  # one field
+D3 = D ← ((:J, 3), (:N, 10))      # several fields
+```
 """
 function (←)(str, tpl::Tuple)
     if typeof(values(tpl)[1]) ≠ Symbol

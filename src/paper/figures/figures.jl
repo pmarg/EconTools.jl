@@ -2,7 +2,7 @@
 # Functions for creating publication-ready PGFPlots figures
 
 """
-    initialize_pgfplots()
+    initialize_pgfplots() -> nothing
 
 Documentation function. PGFPlotsX setup (color definitions, cycle lists) is
 automatically loaded when EconTools is imported via pgfplots_setup.jl.
@@ -36,7 +36,7 @@ initialize_pgfplots() = nothing
                  source="",
                  width="0.8\\\\textwidth",
                  height="0.5\\\\textwidth",
-                 standalone=false)
+                 standalone=false) -> String
 
 Save a PGFPlots object as a LaTeX figure file.
 
@@ -50,6 +50,9 @@ Save a PGFPlots object as a LaTeX figure file.
 - `width::String="0.8\\\\textwidth"`: Figure width
 - `height::String="0.5\\\\textwidth"`: Figure height
 - `standalone::Bool=false`: If true, wraps in figure environment with caption/label
+
+# Returns
+- `String`: the path of the written `.tex` file.
 
 # Example
 ```julia
@@ -126,7 +129,7 @@ end
 
 
 """
-    save_pgfplot_simple(plot, filename, caption, label; kwargs...)
+    save_pgfplot_simple(plot, filename, caption, label; kwargs...) -> String
 
 Simplified wrapper for save_pgfplot compatible with identification_summary.jl.
 
@@ -137,6 +140,9 @@ Simplified wrapper for save_pgfplot compatible with identification_summary.jl.
 - `label::String`: LaTeX label (without fig: prefix)
 - `width::String="0.8\\\\textwidth"`: Figure width
 - `height::String="0.5\\\\textwidth"`: Figure height
+
+# Returns
+- `String`: the path of the written `.tex` file.
 
 # Example
 ```julia

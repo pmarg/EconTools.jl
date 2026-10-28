@@ -4,7 +4,7 @@
 # Note: Literate is imported at the EconTools module level
 
 """
-    find_project_root(start_path=pwd())
+    find_project_root(start_path=pwd()) -> String
 
 Find the main project root directory, prioritizing repository roots.
 
@@ -385,7 +385,7 @@ end
 
 
 """
-    find_quarto_config(start_dir::String, explicit_path::Union{String,Nothing})
+    find_quarto_config(start_dir::String, explicit_path::Union{String,Nothing}) -> Union{String,Nothing}
 
 Search for _quarto.yml configuration file.
 
@@ -436,7 +436,7 @@ end
 
 
 """
-    find_econtools_config()
+    find_econtools_config() -> Union{String,Nothing}
 
 Get path to _quarto.yml in the EconTools/renderer/ directory.
 
@@ -457,9 +457,10 @@ end
 
 
 """
-    format_to_extension(format::String)
+    format_to_extension(format::String) -> String
 
-Convert Quarto format name to file extension.
+File extension of a Quarto output format, e.g. `"pdf"` → `".pdf"`, `"revealjs"` →
+`".html"`, `"gfm"` → `".md"`. Unknown formats map to `".<format>"`.
 """
 function format_to_extension(format::String)
     format_map = Dict(

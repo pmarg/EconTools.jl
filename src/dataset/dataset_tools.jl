@@ -1,4 +1,36 @@
 
+"""
+    pivot_longer(df, bycol, cols; period=:Period, separator=true) -> DataFrame
+
+Reshape a wide panel, with one column per variable and year such as `income1990`,
+`income1992`, into long format with one row per `bycol` × period.
+
+For each stem in `cols`, every column whose name matches `<stem><digits>` is stacked:
+the digits become the period and the values a column named after the stem. The
+stems are then joined on `[bycol, period]` (outer join, so unbalanced panels are kept).
+
+# Arguments
+- `df::AbstractDataFrame`: wide data.
+- `bycol::Symbol`: identifier column, copied to every row (e.g. `:id`).
+- `cols::Vector{Symbol}`: variable stems to reshape (e.g. `[:income, :bmi]`).
+
+# Keywords
+- `period::Symbol=:Period`: name of the period column in the result. Periods are
+  `String`s (the digits of the original column names).
+- `separator::Bool=true`: currently has no effect; both settings use the pattern
+  `<stem><digits>`.
+
+# Returns
+- `DataFrame` with columns `bycol`, `period` and one column per stem, or `nothing` if
+  no stem could be reshaped. A stem that fails is skipped with a warning.
+
+# Examples
+```julia
+wide = DataFrame(id=[1, 2], income1990=[10, 20], income1992=[11, 21])
+pivot_longer(wide, :id, [:income]; period=:year)
+# 4×3 DataFrame: id, year ("1990", "1992"), income
+```
+"""
 function pivot_longer(df::AbstractDataFrame,bycol::Symbol,cols::Vector{Symbol};period = :Period, separator = true)
     # temp = nothing
      df_longer = nothing
@@ -34,6 +66,23 @@ function pivot_longer(df::AbstractDataFrame,bycol::Symbol,cols::Vector{Symbol};p
 end
 
 
+"""
+    reshape_results!(mc, D) -> DataFrame
+
+Convert a simulation results struct into a long `DataFrame` with one column per field.
+
+Every field of `mc` must be an `N × J` array (agents × ages); each is flattened with
+`vec` (column-major), so row `(j - 1) * N + i` holds agent `i` at age `j`.
+
+# Arguments
+- `mc`: struct whose fields are all `D.N × D.J` arrays (e.g. Monte Carlo output).
+- `D`: any object with fields `N` (number of agents) and `J` (number of ages).
+
+# Returns
+- `DataFrame` with `D.N * D.J` rows and one column per field of `mc`, in field order.
+
+Despite the `!`, `mc` is not modified.
+"""
 function reshape_results!(mc,D)
   N = D.N
   J = D.J
@@ -48,6 +97,22 @@ end
 
 
 
+"""
+    create_age_groups(start_age, end_age, interval) -> Vector{Tuple}
+
+Split the ages `start_age:end_age` into consecutive groups of `interval` years.
+
+# Returns
+- Vector of `(first_age, last_age)` tuples, both inclusive. The last group is cut at
+  `end_age` if the range does not divide evenly.
+
+# Examples
+```julia
+create_age_groups(25, 36, 5)  # [(25, 29), (30, 34), (35, 36)]
+```
+
+See also [`assign_age_groups`](@ref), [`assign_groups!`](@ref).
+"""
 function create_age_groups(start_age, end_age, interval)
   age_groups = []
   current_age = start_age
@@ -63,6 +128,22 @@ function create_age_groups(start_age, end_age, interval)
   return age_groups
 end
 
+"""
+    assign_age_groups(df, age, name, start_age, end_age, interval) -> DataFrame
+
+Add a categorical column `name` to `df` labelling each row's age group as `"first-last"`
+(e.g. `"25-29"`), using the groups of [`create_age_groups`](@ref).
+
+# Arguments
+- `df::DataFrame`: data, modified in place.
+- `age::Symbol`: age column.
+- `name::Symbol`: new column to create.
+- `start_age`, `end_age`, `interval`: passed to `create_age_groups`.
+
+# Returns
+- `df`, with the new column. Rows whose age falls outside `start_age:end_age` get
+  `missing`.
+"""
 function assign_age_groups(df, age, name, start_age, end_age, interval)
   age_groups = create_age_groups(start_age, end_age, interval)
   df[!, name] = CategoricalArray(undef, nrow(df))
@@ -81,14 +162,38 @@ end
 
 
 """
-    assign_groups!(df, var, varname, intervals; categories=[], topcoded=true, numerical_cat=true)
+    assign_groups!(df, var, varname, intervals; categories=[], topcoded=true, numerical_cat=true) -> DataFrame
 
-Function that assigns observations to groups based on the intervals provided. The intervals are inclusive on the left and exclusive on the right. The function can also assign names to the groups.
+Assign each row of `df` to a group by the value of `var`, using the thresholds in
+`intervals`, and store the group in a new column `varname`.
+
+Group `j` is `intervals[j] ≤ x < intervals[j+1]` (closed on the left, open on the
+right). Values at or above the last threshold form the last group.
+
+# Arguments
+- `df::DataFrame`: data, modified in place.
+- `var::Symbol`: column to group by.
+- `varname::Symbol`: new column to create.
+- `intervals`: increasing thresholds (e.g. `25:5:90`).
+
+# Keywords
+- `categories=[]`: optional group names, one per threshold. Without names, groups are
+  the integers `1:length(intervals)`.
+- `topcoded::Bool=true`: if `true`, values `≥ intervals[end]` get the last group; if
+  `false`, they get `-1` (or `missing` with `categories`).
+- `numerical_cat::Bool=true`: with `categories`, replace the names by their categorical
+  level codes. Levels are the sorted names, so codes follow alphabetical order, not
+  the order of `intervals`.
+
+# Returns
+- `df`, with the new column. Values below `intervals[1]` get `0` (or `missing` with
+  `categories`).
 
 # Examples
-```julia-repl
-temp = DataFrame(age=[25, 32, 40, 55])
-assign_groups(temp, :age, :agegroup5, (25:5:90))
+```julia
+df = DataFrame(age=[25, 32, 40, 95])
+assign_groups!(df, :age, :agegroup5, 25:5:90)
+df.agegroup5  # [1, 2, 4, 14]: 95 is top-coded into the last group (90+)
 ```
 """
 function assign_groups!(df, var, varname, intervals; categories=[], topcoded=true, numerical_cat=true)
@@ -159,9 +264,37 @@ function assign_groups!(df, var, varname, intervals; categories=[], topcoded=tru
 end
 
 # Post-Estimation Analysis Functions
-# Compute and save grouped statistics from DataFrames
-import Statistics: mean, var, median, quantile, quantile, std
+# Methods of the Statistics functions for a DataFrame column, optionally weighted and
+# by group. They extend Statistics.mean etc., so they are available wherever
+# Statistics is loaded.
+import Statistics: mean, var, median, quantile, std
 
+"""
+    mean(df::DataFrame, value_col::Symbol; by=nothing, w=nothing, skipmissing=false)
+
+Mean of `df[!, value_col]`, optionally weighted and by group.
+
+# Arguments
+- `df::DataFrame`: data.
+- `value_col::Symbol`: column to summarize.
+
+# Keywords
+- `by=nothing`: grouping column (`Symbol`) or columns (`Vector{Symbol}`).
+- `w=nothing`: column of frequency weights (`StatsBase.fweights`).
+- `skipmissing::Bool=false`: drop missing values of `value_col` (and their weights).
+
+# Returns
+- Without `by`: a number.
+- With `by`: a `DataFrame` with the grouping column(s) and the statistic in a column
+  named `value_col`.
+
+# Examples
+```julia
+mean(df, :bmi)                                  # overall mean
+mean(df, :income, by=:education, w=:weight)     # weighted mean by education
+mean(df, :hours, by=[:edu, :age_group], skipmissing=true)
+```
+"""
 function mean(df::DataFrame, value_col::Symbol; by::Union{Nothing,Symbol,Vector{Symbol}}=nothing, w::Union{Nothing,Symbol}=nothing, skipmissing::Bool=false)
   if isnothing(by)
     if isnothing(w)
@@ -197,6 +330,28 @@ function mean(df::DataFrame, value_col::Symbol; by::Union{Nothing,Symbol,Vector{
   end
 end
 
+"""
+    var(df::DataFrame, value_col::Symbol; by=nothing, w=nothing, skipmissing=false)
+
+Variance of `df[!, value_col]`, optionally weighted and by group. Weighted variances
+use `StatsBase`'s frequency-weight formula.
+
+# Arguments
+- `df::DataFrame`: data.
+- `value_col::Symbol`: column to summarize.
+
+# Keywords
+- `by=nothing`: grouping column (`Symbol`) or columns (`Vector{Symbol}`).
+- `w=nothing`: column of frequency weights (`StatsBase.fweights`).
+- `skipmissing::Bool=false`: drop missing values of `value_col` (and their weights).
+
+# Returns
+- Without `by`: a number.
+- With `by`: a `DataFrame` with the grouping column(s) and the statistic in a column
+  named `value_col`.
+
+See also [`std`](@ref).
+"""
 function var(df::DataFrame, value_col::Symbol; by::Union{Nothing,Symbol,Vector{Symbol}}=nothing, w::Union{Nothing,Symbol}=nothing, skipmissing::Bool=false)
   if isnothing(by)
     if isnothing(w)
@@ -231,6 +386,29 @@ function var(df::DataFrame, value_col::Symbol; by::Union{Nothing,Symbol,Vector{S
   end
 end
 
+"""
+    median(df::DataFrame, value_col::Symbol; by=nothing, w=nothing, skipmissing=false)
+
+Median of `df[!, value_col]`, optionally by group.
+
+Weights are not supported: with `w` and no `by`, a warning is issued and the
+unweighted median returned; with `by`, `w` is ignored.
+
+# Arguments
+- `df::DataFrame`: data.
+- `value_col::Symbol`: column to summarize.
+
+# Keywords
+- `by=nothing`: grouping column (`Symbol`) or columns (`Vector{Symbol}`).
+- `w=nothing`: ignored (see above).
+- `skipmissing::Bool=false`: drop missing values of `value_col`.
+
+# Returns
+- Without `by`: a number.
+- With `by`: a `DataFrame` with the median in a column named `value_col`. Unlike the
+  other methods, the grouping column is renamed `types` (or `types_<col>` for each
+  column when `by` is a vector).
+"""
 function median(df::DataFrame, value_col::Symbol; by::Union{Nothing,Symbol,Vector{Symbol}}=nothing, w::Union{Nothing,Symbol}=nothing, skipmissing::Bool=false)
   if isnothing(by)
     if isnothing(w)
@@ -258,6 +436,32 @@ function median(df::DataFrame, value_col::Symbol; by::Union{Nothing,Symbol,Vecto
 end
 
 
+"""
+    quantile(df::DataFrame, value_col::Symbol, q::Float64; by=nothing, w=nothing, skipmissing=false)
+
+Quantile `q` (between 0 and 1) of `df[!, value_col]`, optionally weighted and by group.
+Weighted quantiles use `StatsBase.weights`.
+
+# Arguments
+- `df::DataFrame`: data.
+- `value_col::Symbol`: column to summarize.
+- `q::Float64`: probability, e.g. `0.25` for the first quartile.
+
+# Keywords
+- `by=nothing`: grouping column (`Symbol`) or columns (`Vector{Symbol}`).
+- `w=nothing`: column of weights.
+- `skipmissing::Bool=false`: drop missing values of `value_col` (and their weights).
+
+# Returns
+- Without `by`: a number.
+- With `by`: a `DataFrame` with the grouping column(s) and the statistic in a column
+  named `value_col`.
+
+# Examples
+```julia
+quantile(df, :assets, 0.25, by=:edu, w=:weight)
+```
+"""
 function quantile(df::DataFrame, value_col::Symbol, q::Float64; by::Union{Nothing,Symbol,Vector{Symbol}}=nothing, w::Union{Nothing,Symbol}=nothing, skipmissing::Bool=false)
   if isnothing(by)
     if isnothing(w)
@@ -295,6 +499,28 @@ function quantile(df::DataFrame, value_col::Symbol, q::Float64; by::Union{Nothin
   end
 end
 
+"""
+    std(df::DataFrame, value_col::Symbol; by=nothing, w=nothing, skipmissing=false)
+
+Standard deviation of `df[!, value_col]`, optionally weighted and by group. Weighted
+values use `StatsBase`'s frequency-weight formula.
+
+# Arguments
+- `df::DataFrame`: data.
+- `value_col::Symbol`: column to summarize.
+
+# Keywords
+- `by=nothing`: grouping column (`Symbol`) or columns (`Vector{Symbol}`).
+- `w=nothing`: column of frequency weights (`StatsBase.fweights`).
+- `skipmissing::Bool=false`: drop missing values of `value_col` (and their weights).
+
+# Returns
+- Without `by`: a number.
+- With `by`: a `DataFrame` with the grouping column(s) and the statistic in a column
+  named `value_col`.
+
+See also [`var`](@ref).
+"""
 function std(df::DataFrame, value_col::Symbol; by::Union{Nothing,Symbol,Vector{Symbol}}=nothing, w::Union{Nothing,Symbol}=nothing, skipmissing::Bool=false)
   if isnothing(by)
     if isnothing(w)

@@ -10,7 +10,7 @@
                      format_cols=nothing,
                      col_align=nothing,
                      header_groups=nothing,
-                     num_format="%.2f")
+                     num_format="%.2f") -> String
 
 Save a DataFrame as a publication-ready LaTeX table with threeparttable formatting.
 
@@ -25,6 +25,9 @@ Save a DataFrame as a publication-ready LaTeX table with threeparttable formatti
 - `col_align::Union{Nothing, String}=nothing`: Custom column alignment (e.g., "lcccc"), defaults to left for first, center for rest
 - `header_groups::Union{Nothing, Vector{NamedTuple}}=nothing`: For nested headers, vector of (label, span) tuples
 - `num_format::String="%.2f"`: Printf format string for numeric columns
+
+# Returns
+- `String`: the path of the written `.tex` file.
 
 # Example
 ```julia
@@ -169,7 +172,7 @@ end
 
 
 """
-    save_latex_table_simple(df, filepath, caption, label; kwargs...)
+    save_latex_table_simple(df, filepath, caption, label; kwargs...) -> String
 
 Simplified wrapper for save_latex_table with fewer required arguments.
 Compatible with the identification_summary.jl code.
@@ -180,6 +183,9 @@ Compatible with the identification_summary.jl code.
 - `caption::String`: Table caption
 - `label::String`: LaTeX label (without tab: prefix)
 - `format_cols::Union{Nothing, Vector{Int}}=nothing`: Columns to format as numbers
+
+# Returns
+- `String`: the path of the written `.tex` file.
 
 # Example
 ```julia
@@ -210,9 +216,19 @@ end
 
 
 """
-    format_number(x; decimals=2, thousands_sep=true)
+    format_number(x; decimals=2, thousands_sep=true) -> String
 
 Format a number for LaTeX tables with optional thousands separator.
+
+# Arguments
+- `x`: number, or `missing`.
+
+# Keywords
+- `decimals::Int=2`: digits after the decimal point.
+- `thousands_sep::Bool=true`: insert commas every three digits when `abs(x) ≥ 1000`.
+
+# Returns
+- `String`: the formatted number, or `"--"` if `x` is `missing`.
 
 # Example
 ```julia

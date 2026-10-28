@@ -1,10 +1,20 @@
 """
-    expspace(x_min::Float64, x_max::Float64)::Array{Float64}, x_scale::Float64,n_x::Int64)
-This generates a vector of length n_x between x_min and x_max,
-where the spacing is controlled by x_scale.  When x_scale == 1,
-this is equivalent to linspace.  When x_scale > 1, the points
-are closer together near x_min.  When 0 < x_scale < 1,
-the points are closer together near x_max.
+    expspace(x_min::Float64, x_max::Float64, x_scale::Float64, n_x::Int64) -> Vector{Float64}
+
+Grid of `n_x` points from `x_min` to `x_max` whose spacing is controlled by `x_scale`:
+point `i` is `x_min + (x_max - x_min) * ((i - 1) / (n_x - 1))^x_scale`.
+
+- `x_scale == 1`: evenly spaced (like `range`).
+- `x_scale > 1`: points closer together near `x_min` (e.g. asset grids near zero).
+- `0 < x_scale < 1`: points closer together near `x_max`.
+
+With `n_x == 1` the grid is `[x_min]`.
+
+# Examples
+```julia
+expspace(0.0, 100.0, 1.0, 5)  # [0.0, 25.0, 50.0, 75.0, 100.0]
+expspace(0.0, 100.0, 2.0, 5)  # [0.0, 6.25, 25.0, 56.25, 100.0]
+```
 """
 function expspace(x_min::Float64, x_max::Float64, x_scale::Float64,n_x::Int64)::Array{Float64}
     x_vec=zeros(n_x)
@@ -22,23 +32,38 @@ function expspace(x_min::Float64, x_max::Float64, x_scale::Float64,n_x::Int64)::
 end
 
 """
-    tauchen(N::Integer=18, ρ::Real=0.96, σ::Real=0.045, μ::Real=0.0, n_std::Integer=4)
-Tauchen's (1996) method for approximating AR(1) process with a finite markov chain
+    tauchen(N::Integer=9, ρ::Real=0.96, σ::Real=0.045, μ::Real=0.0, n_std::Integer=4) -> (grid, Π, Π_cdf)
+
+Tauchen's (1986) method for approximating the AR(1) process
 ```math
     y_t = \\mu + \\rho y_{t-1} + \\epsilon_t
 ```
-where \$\\epsilon_t \\sim N (0, \\sigma^2)\$
-##### Arguments
-- `N::Integer`: Number of points in markov process
-- `ρ::Real` : Persistence parameter in AR(1) process
-- `σ::Real` : Standard deviation of random component of AR(1) process
-- `μ::Real(0.0)` : Mean of AR(1) process
-- `n_std::Integer(4)` : The number of standard deviations to each side the process
-  should span
-##### Returns
-- `grid, Π, Π_cdf` : The grid, the transition matrix and CDF of transition matrix
-##### Notes
-- This function has been modified by QuantEcon.jl
+where ``\\epsilon_t \\sim N(0, \\sigma^2)``, with an `N`-state Markov chain.
+
+# Arguments
+- `N::Integer=9`: number of grid points.
+- `ρ::Real=0.96`: persistence.
+- `σ::Real=0.045`: standard deviation of the innovation ``\\epsilon_t``.
+- `μ::Real=0.0`: constant of the process (the unconditional mean is `μ / (1 - ρ)`).
+- `n_std::Integer=4`: the grid spans `n_std` unconditional standard deviations on
+  each side of the mean.
+
+# Returns
+- `grid`: `N` evenly spaced points (a range).
+- `Π`: `N × N` transition matrix, `Π[i, j] = P(y′ = grid[j] | y = grid[i])`.
+- `Π_cdf`: cumulative sums of `Π` along each row.
+
+If `ρ ≤ 0`, `Π` and `Π_cdf` are instead the `N`-vector of i.i.d. probabilities. With
+`N == 1`, `Π = Π_cdf = [1.0]`.
+
+# Notes
+- Adapted from QuantEcon.jl. For highly persistent processes or few points, prefer
+  [`rouwenhorst`](@ref).
+
+# Examples
+```julia
+z_grid, Π, Π_cdf = tauchen(9, 0.96, 0.045, 0.0, 4)
+```
 """
 function tauchen(N::Integer=9, ρ::Real=0.96, σ::Real=0.045, μ::Real=0.0, n_std::Integer=4)
     if N > 1
@@ -90,7 +115,8 @@ function tauchen(N::Integer=9, ρ::Real=0.96, σ::Real=0.045, μ::Real=0.0, n_st
 end
 
 """
-    rouwenhorst(N::Integer, ρ::Real, σ::Real, μ::Real=0.0)
+    rouwenhorst(N::Integer, ρ::Real, σ::Real, μ::Real=0.0) -> (grid, Π, Π_cdf)
+
 Rouwenhorst's (1995) method for approximating an AR(1) process with a finite Markov chain
 ```math
     y_t = \\mu + \\rho y_{t-1} + \\epsilon_t
@@ -99,16 +125,25 @@ where \$\\epsilon_t \\sim N (0, \\sigma^2)\$. Unlike Tauchen's method, the chain
 unconditional variance \$\\sigma^2/(1-\\rho^2)\$ and the first-order autocorrelation \$\\rho\$
 exactly for any `N`, which makes it the preferred method for highly persistent
 processes (ρ close to 1) and for few grid points (Kopecky and Suen, 2010).
-##### Arguments
-- `N::Integer`: Number of points in markov process
-- `ρ::Real` : Persistence parameter in AR(1) process
-- `σ::Real` : Standard deviation of random component of AR(1) process
-- `μ::Real(0.0)` : Mean of AR(1) process
-##### Returns
-- `grid, Π, Π_cdf` : The grid (evenly spaced over ±σ_y√(N-1) around μ/(1-ρ)), the
-  transition matrix and CDF of transition matrix, as in `tauchen`
-##### Notes
+# Arguments
+- `N::Integer`: number of grid points.
+- `ρ::Real`: persistence.
+- `σ::Real`: standard deviation of the innovation.
+- `μ::Real=0.0`: constant of the process (the unconditional mean is `μ / (1 - ρ)`).
+
+# Returns
+- `grid::Vector`: `N` evenly spaced points over ±σ_y√(N-1) around `μ / (1 - ρ)`,
+  where σ_y = σ / √(1 - ρ²).
+- `Π`: `N × N` transition matrix, `Π[i, j] = P(y′ = grid[j] | y = grid[i])`.
+- `Π_cdf`: cumulative sums of `Π` along each row.
+
+# Notes
 - The stationary distribution is Binomial(N-1, 1/2) over the grid points.
+
+# Examples
+```julia
+z_grid, Π, Π_cdf = rouwenhorst(5, 0.97, 0.1)
+```
 """
 function rouwenhorst(N::Integer, ρ::Real, σ::Real, μ::Real=0.0)
     N == 1 && return [μ / (1 - ρ)], ones(1, 1), ones(1, 1)
