@@ -219,3 +219,9 @@ end
         end
     end
 end
+
+@testset "format_number negatives (v2.6)" begin
+    @test format_number(-123456.0, decimals=0) == "-123,456"
+    @test format_number(-1234.5) == "-1,234.50"
+    @test format_number(1234567.891) == "1,234,567.89"
+end

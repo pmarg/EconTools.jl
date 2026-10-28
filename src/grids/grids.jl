@@ -160,252 +160,127 @@ function rouwenhorst(N::Integer, ρ::Real, σ::Real, μ::Real=0.0)
     return grid, Π, cumsum(Π, dims=2)
 end
 
-# Quantitative Methods Tools
-# Functions for simulating stochastic processes and parameter interpolation
+# Simulation of discrete random variables and Markov chains (inverse-CDF method)
 
 """
-    calc_markov_shock_from_uniform_rv(u::Float64, Pz_cdf::Vector{Float64}) -> Int
+    draw_from_cdf(u::Real, cdf::AbstractVector{<:Real}) -> Int
 
-Find next Markov state using inverse CDF method.
+State drawn by the uniform number `u` from a discrete distribution with cumulative
+probabilities `cdf`: the smallest `j` with `cdf[j] ≥ u` (binary search).
 
-Given a uniform random draw and cumulative transition probabilities, determines
-the next state index. This is the core function for simulating discrete Markov chains.
+If rounding leaves `cdf[end]` slightly below 1, a draw above it returns the last state.
 
 # Arguments
-- `u::Float64`: Uniform random draw in [0, 1]
-- `Pz_cdf::Vector{Float64}`: Cumulative transition probabilities (length n_states)
-  Must be sorted and sum to 1.0
+- `u::Real`: uniform draw in [0, 1].
+- `cdf::AbstractVector{<:Real}`: nondecreasing cumulative probabilities, ending at 1.
 
 # Returns
-- `Int`: Next state index (1-based)
+- `Int`: state index in `1:length(cdf)`.
 
-# Algorithm
-Finds smallest index j where u < Pz_cdf[j]. This implements the inverse CDF
-(quantile) method for discrete distributions.
-
-# Example
+# Examples
 ```julia
-## Transition from state 2 in 3-state chain
-Pz = [0.7 0.2 0.1;
-      0.2 0.6 0.2;
-      0.1 0.2 0.7]
-Pz_cdf = cumsum(Pz, dims=2)
-
-## From state 2, CDF is [0.2, 0.8, 1.0]
-u = 0.5  ## Random draw
-next_state = calc_markov_shock_from_uniform_rv(u, Pz_cdf[2, :])  ## Returns 2
+draw_from_cdf(0.5, [0.2, 0.8, 1.0])  # 2
 ```
-
-# Notes
-- Internal function used by `simulate_markov_shocks`
-- O(n_states) complexity - could be optimized with binary search for large state spaces
 """
-function calc_markov_shock_from_uniform_rv(u::Float64, Pz_cdf::Vector{Float64})
-    i_z_next = 0
-    done = false
-
-    while !done
-        i_z_next += 1
-        done = (u < Pz_cdf[i_z_next])
-    end
-
-    return i_z_next
+@inline function draw_from_cdf(u::Real, cdf::AbstractVector{<:Real})::Int
+    return min(searchsortedfirst(cdf, u), length(cdf))
 end
 
-
 """
-    simulate_markov_shocks(N::Int64, sim_z::Vector{Int}, Pz_cdf::Matrix{Float64}, rng)
+    simulate_markov_shocks(N::Integer, cdf::AbstractVector{<:Real}, rng) -> Vector{Int}
+    simulate_markov_shocks(N::Integer, i_current::AbstractVector{<:Integer}, cdf::AbstractMatrix{<:Real}, rng) -> Vector{Int}
 
-Simulate next-period Markov states using inverse CDF method.
+Draw `N` states by the inverse-CDF method, using `N` uniform draws from `rng`.
 
-Given current states and transition probabilities, simulates the next period states
-for N individuals. Uses uniform random draws to determine transitions.
+- With a vector `cdf`: `N` independent draws from one distribution (e.g. initial
+  states or an i.i.d. shock).
+- With current states `i_current` and a transition CDF matrix `cdf` (row `i` is the
+  CDF of next period's state given state `i`, e.g. `cumsum(Π, dims=2)`): next
+  period's state of each of the `N` agents.
+
+To draw from probabilities rather than a CDF, use [`simulate_from_pdf`](@ref).
 
 # Arguments
-- `N::Int64`: Number of individuals/simulations
-- `sim_z::Vector{Int}`: Current state indices (length N), values in 1:n_states
-- `Pz_cdf::Matrix{Float64}`: Cumulative transition probability matrix (n_states × n_states)
-  - Row i contains CDF for transitions from state i
-  - Each row must be sorted and end at 1.0
-- `rng`: Random number generator (use StableRNG for reproducibility)
+- `N::Integer`: number of draws (agents).
+- `cdf`: cumulative probabilities, a vector or an `n × n` matrix with one CDF per row.
+- `i_current::AbstractVector{<:Integer}`: current state of each agent (length `N`).
+- `rng`: random number generator (e.g. `StableRNG(123)` for reproducibility).
 
 # Returns
-- `Vector{Int}`: Next period state indices (length N)
+- `Vector{Int}`: `N` state indices.
 
-# Example
-```julia
-using StableRNGs, Statistics
-
-## 3-state Markov chain with persistence
-Pz = [0.7 0.2 0.1;    ## Transitions from state 1
-      0.2 0.6 0.2;    ## Transitions from state 2
-      0.1 0.2 0.7]    ## Transitions from state 3
-
-Pz_cdf = cumsum(Pz, dims=2)  ## Convert to CDF
-
-rng = StableRNG(123)
-current_states = fill(2, 1000)  ## All start in state 2
-next_states = simulate_markov_shocks(1000, current_states, Pz_cdf, rng)
-
-## Check transition frequencies match Pz[2, :]
-mean(next_states .== 1)  ## Should be ≈ 0.2
-mean(next_states .== 2)  ## Should be ≈ 0.6
-mean(next_states .== 3)  ## Should be ≈ 0.2
-```
-
-# Notes
-- Requires Pz_cdf (not Pz) for efficiency - convert once, use many times
-- Uses inverse CDF method: for each individual, finds smallest j where U < CDF[current_state, j]
-- O(N × n_states) complexity
-- Common in dynamic programming for simulating income shocks, health transitions, etc.
-"""
-function simulate_markov_shocks(N::Int64, sim_z::Vector{Int}, Pz_cdf::Matrix{Float64}, rng)
-    sim_z_next = zeros(Int, N)
-    u = rand(rng, N)
-
-    for i = 1:N
-        sim_z_next[i] = calc_markov_shock_from_uniform_rv(u[i], Pz_cdf[sim_z[i], :])
-    end
-
-    return sim_z_next
-end
-
-
-"""
-    simulate_markov_shocks(N::Int64, Pz_initial_cdf::Vector{Float64}, rng)
-
-Simulate initial Markov states from initial distribution.
-
-Draws initial states for N individuals from a given initial distribution.
-
-# Arguments
-- `N::Int64`: Number of individuals
-- `Pz_initial_cdf::Vector{Float64}`: Cumulative initial state distribution (length n_states)
-  - Must be sorted and end at 1.0
-  - Element j is P(initial state ≤ j)
-- `rng`: Random number generator
-
-# Returns
-- `Vector{Int}`: Initial state indices (length N)
-
-# Example
+# Examples
 ```julia
 using StableRNGs
-
-## Initial distribution: 30% state 1, 50% state 2, 20% state 3
-Pz_initial = [0.3, 0.5, 0.2]
-Pz_initial_cdf = cumsum(Pz_initial)  ## [0.3, 0.8, 1.0]
-
-rng = StableRNG(456)
-initial_states = simulate_markov_shocks(10000, Pz_initial_cdf, rng)
-
-## Check frequencies match initial distribution
-mean(initial_states .== 1)  ## Should be ≈ 0.3
-mean(initial_states .== 2)  ## Should be ≈ 0.5
-mean(initial_states .== 3)  ## Should be ≈ 0.2
+rng = StableRNG(123)
+s0 = simulate_markov_shocks(1000, cumsum([0.3, 0.5, 0.2]), rng)
+Π = [0.7 0.2 0.1; 0.2 0.6 0.2; 0.1 0.2 0.7]
+s1 = simulate_markov_shocks(1000, s0, cumsum(Π, dims=2), rng)
 ```
-
-# Notes
-- Use this for period 1 initialization
-- Use the other method (with `sim_z` argument) for period 2 onwards
 """
-function simulate_markov_shocks(N::Int64, Pz_initial_cdf::Vector{Float64}, rng)
-    sim_z = zeros(Int, N)
-    u = rand(rng, N)
-
-    for i = 1:N
-        sim_z[i] = calc_markov_shock_from_uniform_rv(u[i], Pz_initial_cdf)
-    end
-
-    return sim_z
+function simulate_markov_shocks(N::Integer, cdf::AbstractVector{<:Real}, rng)::Vector{Int}
+    draws = rand(rng, N)
+    return [draw_from_cdf(u, cdf) for u in draws]
 end
+
+function simulate_markov_shocks(N::Integer, i_current::AbstractVector{<:Integer}, cdf::AbstractMatrix{<:Real}, rng)::Vector{Int}
+    draws = rand(rng, N)
+    return [draw_from_cdf(draws[i], view(cdf, i_current[i], :)) for i in 1:N]
+end
+
+"""
+    simulate_from_pdf(N::Integer, pdf::AbstractVector{<:Real}, rng) -> Vector{Int}
+
+Draw `N` states from a discrete distribution given by its probabilities `pdf` (which
+should sum to one). Same draws as `simulate_markov_shocks(N, cumsum(pdf), rng)`.
+
+# Examples
+```julia
+marry = simulate_from_pdf(1, [1 - p, p], rng)[1] == 2
+```
+"""
+simulate_from_pdf(N::Integer, pdf::AbstractVector{<:Real}, rng)::Vector{Int} =
+    simulate_markov_shocks(N, cumsum(pdf), rng)
 
 
 # Interpolation Functions
-# Numerical interpolation methods for value functions and policy functions
 
 """
-    bilerp_flat(aG, bG, M, a, b)
+    bilerp_flat(aG::AbstractVector, bG::AbstractVector, M::AbstractMatrix, a::Real, b::Real) -> Real
 
-Fast bilinear interpolation for 2D grids with flat indexing.
+Bilinear interpolation of the values `M[i, j]`, defined on the grid points
+`(aG[i], bG[j])`, at the point `(a, b)`.
 
-Performs bilinear interpolation on a 2D matrix M with grid points defined by vectors aG and bG.
-The function finds the four surrounding grid points and computes the weighted average.
+Points outside the grid are clamped to its edges (no extrapolation). Repeated grid
+points (a zero-width cell) are allowed. Each grid needs at least two points.
 
 # Arguments
-- `aG::Vector`: Grid points for first dimension (e.g., assets)
-- `bG::Vector`: Grid points for second dimension (e.g., BMI)
-- `M::Matrix`: Matrix of values to interpolate (size: length(aG) × length(bG))
-- `a::Real`: Point in first dimension to interpolate at
-- `b::Real`: Point in second dimension to interpolate at
+- `aG`, `bG`: increasing grids of the first and second dimensions (e.g. assets, BMI).
+- `M::AbstractMatrix`: values, size `length(aG) × length(bG)`.
+- `a`, `b`: point at which to interpolate.
 
 # Returns
-- Interpolated value at point (a, b)
+- The interpolated value, of the element type of `M` (promoted with `a` and `b`).
 
-# Algorithm
-1. Finds bracketing indices for both dimensions using binary search
-2. Computes interpolation weights based on relative position
-3. Returns weighted average of four corner values
-
-# Example
+# Examples
 ```julia
-# Create a simple 2D value function
-assets = [0.0, 1.0, 2.0, 3.0]
-bmi = [20.0, 25.0, 30.0, 35.0]
-V = rand(4, 4)  # Value function matrix
-
-# Interpolate at (a=1.5, bmi=27.5)
-v_interp = bilerp_flat(assets, bmi, V, 1.5, 27.5)
+aG = [0.0, 1.0, 2.0]; bG = [10.0, 20.0]
+M = [1.0 2.0; 3.0 4.0; 5.0 6.0]
+bilerp_flat(aG, bG, M, 0.5, 15.0)  # 2.5
+bilerp_flat(aG, bG, M, 9.0, 99.0)  # 6.0 (clamped to the corner)
 ```
-
-# Notes
-- Efficient for repeated interpolation on same grid
-- Handles boundary cases by clamping to grid edges
-- Commonly used in dynamic programming for value function interpolation
 """
-function bilerp_flat(aG, bG, M, a, b)
-    na = length(aG)
-    nb = length(bG)
-
-    ## Find bracketing indices for a
-    if a <= aG[1]
-        ia = 1
-        ia_next = 1
-        wa = 0.0
-    elseif a >= aG[end]
-        ia = na
-        ia_next = na
-        wa = 0.0
-    else
-        ia = searchsortedlast(aG, a)
-        ia_next = ia + 1
-        wa = (a - aG[ia]) / (aG[ia_next] - aG[ia])
+@inline function bilerp_flat(aG::AbstractVector, bG::AbstractVector, M::AbstractMatrix, a::Real, b::Real)
+    @inbounds begin
+        ia = clamp(searchsortedlast(aG, a), 1, length(aG) - 1)
+        ib = clamp(searchsortedlast(bG, b), 1, length(bG) - 1)
+        a0, a1 = aG[ia], aG[ia+1]
+        b0, b1 = bG[ib], bG[ib+1]
+        da = a1 - a0
+        db = b1 - b0
+        ta = clamp((a - a0) / (da == 0 ? one(da) : da), 0, 1)
+        tb = clamp((b - b0) / (db == 0 ? one(db) : db), 0, 1)
+        return (1 - ta) * (1 - tb) * M[ia, ib] + ta * (1 - tb) * M[ia+1, ib] +
+               (1 - ta) * tb * M[ia, ib+1] + ta * tb * M[ia+1, ib+1]
     end
-
-    ## Find bracketing indices for b
-    if b <= bG[1]
-        ib = 1
-        ib_next = 1
-        wb = 0.0
-    elseif b >= bG[end]
-        ib = nb
-        ib_next = nb
-        wb = 0.0
-    else
-        ib = searchsortedlast(bG, b)
-        ib_next = ib + 1
-        wb = (b - bG[ib]) / (bG[ib_next] - bG[ib])
-    end
-
-    ## Bilinear interpolation
-    v11 = M[ia, ib]
-    v21 = M[ia_next, ib]
-    v12 = M[ia, ib_next]
-    v22 = M[ia_next, ib_next]
-
-    v1 = (1 - wa) * v11 + wa * v21
-    v2 = (1 - wa) * v12 + wa * v22
-
-    return (1 - wb) * v1 + wb * v2
 end
-

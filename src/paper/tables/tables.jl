@@ -246,7 +246,8 @@ function format_number(x; decimals=2, thousands_sep=true)
     if thousands_sep && abs(x) >= 1000
         ## Add thousands separator
         parts = split(formatted, ".")
-        integer_part = parts[1]
+        sign = startswith(parts[1], "-") ? "-" : ""
+        integer_part = lstrip(parts[1], '-')
         decimal_part = length(parts) > 1 ? "." * parts[2] : ""
 
         ## Insert commas
@@ -259,7 +260,7 @@ function format_number(x; decimals=2, thousands_sep=true)
                 push!(result, ",")
             end
         end
-        return join(result) * decimal_part
+        return sign * join(result) * decimal_part
     end
 
     return formatted

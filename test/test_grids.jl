@@ -149,3 +149,23 @@ end
         @test val3 < 10
     end
 end
+
+@testset "Discrete draws (v2.6)" begin
+    cdf = [0.2, 0.8, 1.0]
+    @test draw_from_cdf(0.1, cdf) == 1
+    @test draw_from_cdf(0.2, cdf) == 1          # cdf[j] ≥ u
+    @test draw_from_cdf(0.5, cdf) == 2
+    @test draw_from_cdf(0.999, [0.5, 0.99]) == 2  # cdf below one by rounding
+    pdf = [0.3, 0.5, 0.2]
+    @test simulate_from_pdf(500, pdf, StableRNG(1)) == simulate_markov_shocks(500, cumsum(pdf), StableRNG(1))
+    P = [0.7 0.2 0.1; 0.2 0.6 0.2; 0.1 0.2 0.7]
+    s = simulate_markov_shocks(5, [1, 2, 3, 1, 2], cumsum(P, dims=2), StableRNG(2))
+    @test length(s) == 5 && all(in(1:3), s)
+end
+
+@testset "bilerp_flat generic inputs (v2.6)" begin
+    aG = [0, 1, 2]; bG = [10.0, 20.0]
+    M = [1.0 2.0; 3.0 4.0; 5.0 6.0]
+    @test bilerp_flat(aG, bG, M, 0.5, 15.0) ≈ 2.5   # Int grid
+    @test bilerp_flat([0.0, 0.0, 1.0], bG, M, 0.0, 10.0) ≈ 3.0   # repeated point
+end

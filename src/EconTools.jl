@@ -61,7 +61,7 @@ include(joinpath("renderer", "literate_render.jl"))
 ## Grid generation and numerical methods
 export expspace, tauchen, rouwenhorst
 export bilerp_flat
-export simulate_markov_shocks
+export simulate_markov_shocks, simulate_from_pdf, draw_from_cdf
 
 ## Data manipulation and transformation
 export pivot_longer, reshape_results!
@@ -72,7 +72,9 @@ export assign_groups!, create_age_groups
 export pgfplot, initialize_pgfplots
 
 ## Post-estimation analysis
-## Note: Statistics functions (mean, var, median, quantile, std) are extended via multiple dispatch
+## DataFrame methods of the Statistics functions (dataset_tools.jl). Re-exported so
+## `using EconTools` alone makes them available; same functions as Statistics.mean etc.
+export mean, var, median, quantile, std
 
 ## LaTeX output for papers
 export save_latex_table, save_latex_table_simple, format_number
